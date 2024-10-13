@@ -1,42 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import HomeScreen from './src/screens/home';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import {useEffect} from 'react';
-import { NOTO_SANS } from './utils/const';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { SplashScreen } from './src/screens';
+import AuthNavigator from './src/navigations/AuthNavigator';
 import { NavigationContainer } from '@react-navigation/native';
-import BottomTab from './src/navigation/TabBottom';
-import TabBottom from './src/navigation/TabBottom';
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 const App= () => {
-  const [loaded, error] = useFonts({
-    [NOTO_SANS]: require('./assets/fonts/NotoSans-VariableFont_wdth,wght.ttf'),
-  });
+  // const [loaded, error] = useFonts({
+  //   [NOTO_SANS]: require('./assets/fonts/NotoSans-VariableFont_wdth,wght.ttf'),
+  // });
+
+  // useEffect(() => {
+  //   if (loaded || error) {
+  //     SplashScreen.hideAsync();
+  //   }
+  // }, [loaded, error]);
+
+  // if (!loaded && !error) {
+  //   return null;
+  // }
+  const [isShowSplash, setIsShowSplash] = useState(true)
 
   useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded, error]);
-
-  if (!loaded && !error) {
-    return null;
-  }
+    const timeout = setTimeout(() => {
+      setIsShowSplash(false);
+    },1500)
+    return () => clearTimeout(timeout);
+  },[]);
 
 
 
   return (
+    <>
+    <StatusBar barStyle="dark-content" backgroundColor='trasnparent' translucent/>
+      {isShowSplash? (
+
+      <SplashScreen/>) : (
+      <NavigationContainer>
     
-      <SafeAreaView style={{flex: 1}}>
-          {/* <HomeScreen/> */}
-          <TabBottom/>
-      </SafeAreaView>
+        <AuthNavigator/>
     
-  );
+      </NavigationContainer>
+    
+      )}
+    </>
+  )
 }
 
 
