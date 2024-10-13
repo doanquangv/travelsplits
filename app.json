@@ -4,24 +4,37 @@
     "slug": "travelsplits",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/image/icon.png",
     "userInterfaceStyle": "light",
+    "permissions": [
+      "location"
+    ],
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/image/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.travelsplitscompany.travelsplits",
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyA4LqIXokYpSBxhZuPnkMetkXcG3zavFpg"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.travelsplitscompany.travelsplits"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-font",
+      "expo-asset",
+      "expo-router"
+    ]
   }
 }
