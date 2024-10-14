@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Button, Pressable } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons'; 
 import CreateModal from '../../components/features/create.modal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -57,9 +58,9 @@ const HomeScreen = () => {
           />
           
           <Text style={styles.orText}>hoặc có thể tham gia bằng</Text>
-          <TouchableOpacity style={styles.qrButton}>
+          <Pressable style={styles.qrButton} onPress={async () => await AsyncStorage.clear()}>
             <Text style={styles.qrText}>Quét mã QR sự kiện</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
 
