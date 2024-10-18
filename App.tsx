@@ -1,66 +1,63 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { SplashScreen } from './src/screens';
+import * as SplashScreen from 'expo-splash-screen';
 import AuthNavigator from './src/navigations/AuthNavigator';
 import { NavigationContainer } from '@react-navigation/native';
-import {useAsyncStorage} from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import MainNavigator from './src/navigations/MainNavigator';
-// SplashScreen.preventAutoHideAsync();
-const App= () => {
-  // const [loaded, error] = useFonts({
-  //   [NOTO_SANS]: require('./assets/fonts/NotoSans-VariableFont_wdth,wght.ttf'),
-  // });
+import SplashScreens from './src/screens/SplashScreens';
+import { useFonts } from 'expo-font';
+import { fontFamily } from './src/constants/fontFamilies';
+export default function App() {
+  // Load fonts
+  const [fontsLoaded] = useFonts({   
+    regular: require('./assets/fonts/NotoSans-Regular.ttf'),
+    bold: require('./assets/fonts/NotoSans-Bold.ttf'),
+    // italic: require('./assets/fonts/NotoSans-Italic.ttf'),
+    light: require('./assets/fonts/NotoSans-Light.ttf'),
+    medium: require('./assets/fonts/NotoSans-Medium.ttf'),
+    semibold: require('./assets/fonts/NotoSans-SemiBold.ttf'),
+  });
 
-  // useEffect(() => {
-  //   if (loaded || error) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [loaded, error]);
-
-  // if (!loaded && !error) {
-  //   return null;
-  // }
   const [isShowSplash, setIsShowSplash] = useState(true);
-  const [accessToken, setAccessToken] = useState("")
+  const [accessToken, setAccessToken] = useState("");
 
-  const {getItem, setItem} = useAsyncStorage('assetToken');
-
+  // Kiểm tra token trong AsyncStorage
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    const checkLogin = async () => {
+      const token = await AsyncStorage.getItem('assetToken');
+      if (token) {
+        setAccessToken(token);
+      }
       setIsShowSplash(false);
-    },2000)
-    return () => clearTimeout(timeout);
-  },[]);
+      SplashScreen.hideAsync();
+    };
 
-  useEffect(() => {
-    checkLogin();
-  },[])
-  const checkLogin = async () => {
-    const token = await getItem();
-    token && setAccessToken(token);
-  };
+    // Chờ 2 giây và sau đó kiểm tra token
+    if (fontsLoaded) {
+      setTimeout(() => {
+        checkLogin();
+      }, 2000);
+    }
+  }, [fontsLoaded]);
 
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <>
-    <StatusBar barStyle="dark-content" backgroundColor='trasnparent' translucent/>
-      {isShowSplash? (
-
-      <SplashScreen/>) : (
-      <NavigationContainer>
-        {accessToken ? <MainNavigator/> : <AuthNavigator/>}
-
-      </NavigationContainer>
-    
+      <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
+      {isShowSplash ? (
+        <SplashScreens />
+      ) : (
+        <NavigationContainer>
+          {accessToken ? <MainNavigator /> : <AuthNavigator />}
+        </NavigationContainer>
       )}
     </>
-  )
+  );
 }
-
-
-export default App;
-
 
 const styles = StyleSheet.create({
   container: {
@@ -70,6 +67,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-
-
