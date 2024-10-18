@@ -3,4 +3,5 @@ export const appColors = {
     white:'#fff',
     text: '#666',
     gray: '#aaa',
+    border: '#E4DFDF'
 }
