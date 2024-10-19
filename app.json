@@ -1,5 +1,9 @@
 {
   "expo": {
+    "packagerOpts": {
+      "sourceExts": ["js", "jsx", "svgx"],
+      "transformer": "node_modules/react-native-svg-transformer/index.js"
+    },
     "name": "travelsplits",
     "slug": "travelsplits",
     "version": "1.0.0",
