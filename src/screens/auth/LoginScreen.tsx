@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, Switch } from "react-native";
+import { View, Text, Button, Image, Switch, Alert } from "react-native";
 import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ButtonComponent, InputComponent, RowComponent, SectionComponent, SpaceComponent } from "../../components";
@@ -12,19 +12,34 @@ import { fontFamily } from "../../constants/fontFamilies";
 import SocialLogin from "./components/SocialLogin";
 import SignUpScreen from "./SignUpScreen";
 import authenticationAPI from "../../apis/authApi";
+import { Validate } from "../../../utils/validate";
+import { useDispatch } from "react-redux";
+import { addAuth } from "../../redux/reducers/authReducer";
 
 const LoginScreen = ({navigation} : any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isRemember, setIsRemember] = useState(true)
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
-    try{
-      const res = await authenticationAPI.HandleAuthentication('/hello');
-      console.log(res);
-      
-    } catch (error) {
-      console.log(error)
+
+    const emailValidation = Validate.email(email);
+    if (emailValidation) {
+
+      try{
+        const res = await authenticationAPI.HandleAuthentication('/login', {email, password}, 'post');
+        
+        dispatch(addAuth(res.data));
+       
+        await AsyncStorage.setItem('auth', isRemember? JSON.stringify(res.data): email);
+        
+        
+      } catch (error) {
+        console.log(error)
+      }
+    }else {
+      Alert.alert('Email is not valid')
     }
   }
   return (

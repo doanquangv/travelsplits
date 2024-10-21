@@ -3,8 +3,15 @@ import { View, Text, TouchableOpacity, StyleSheet, Button, Pressable } from 'rea
 import { FontAwesome, Ionicons } from '@expo/vector-icons'; 
 import CreateModal from '../../components/features/create.modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux';
+import { authSelector, removeAuth } from '../../redux/reducers/authReducer';
+import { Use } from 'react-native-svg';
 
 const HomeScreen = () => {
+
+  const dispatch = useDispatch();
+  const auth = useSelector(authSelector);
+
   const [isModalVisible, setModalVisible] = useState(false);
   
   
@@ -58,7 +65,7 @@ const HomeScreen = () => {
           />
           
           <Text style={styles.orText}>hoặc có thể tham gia bằng</Text>
-          <Pressable style={styles.qrButton} onPress={async () => await AsyncStorage.clear()}>
+          <Pressable style={styles.qrButton} onPress={ async () =>{ await AsyncStorage.setItem('auth', auth.email); dispatch(removeAuth({}))}}>
             <Text style={styles.qrText}>Quét mã QR sự kiện</Text>
           </Pressable>
         </View>
@@ -198,3 +205,7 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+function UseSelector(authSelector: (state: any) => any) {
+  throw new Error('Function not implemented.');
+}
+
