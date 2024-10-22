@@ -65,7 +65,7 @@ const HomeScreen = () => {
           />
           
           <Text style={styles.orText}>hoặc có thể tham gia bằng</Text>
-          <Pressable style={styles.qrButton} onPress={ async () =>{ await AsyncStorage.setItem('auth', auth.email); dispatch(removeAuth({}))}}>
+          <Pressable style={styles.qrButton} onPress={ async () =>{ await AsyncStorage.clear(); dispatch(removeAuth({}))}}>
             <Text style={styles.qrText}>Quét mã QR sự kiện</Text>
           </Pressable>
         </View>

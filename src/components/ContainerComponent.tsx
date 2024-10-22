@@ -12,7 +12,7 @@ import TextComponent from "./TextComponent";
 import { fontFamily } from "../constants/fontFamilies";
 
 interface Props {
-  isImageBackground: boolean;
+  isImageBackground?: boolean;
   isScoll?: boolean;
   title?: string;
   children: ReactNode;
@@ -29,7 +29,7 @@ const ContainerComponent = (props: Props) => {
         {(title ||
           back) && (
             <RowComponent
-              styles={{ paddingHorizontal: 16, paddingVertical: 10, minWidth: 48, minHeight:48 }}
+              styles={{ paddingHorizontal: 16, paddingVertical: 10, minWidth: 48, minHeight:48, justifyContent: "flex-start" }}
             >
               {back && (
                 <TouchableOpacity onPress={() => navigation.goBack()} style={{marginRight: 12}}>

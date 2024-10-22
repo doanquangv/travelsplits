@@ -13,7 +13,7 @@ const RowComponent = (props: Props) => {
       
   const { justify, styles, children,onPress } = props;
 
-  const localStyle= [globalStyles.row,{justifyContent: justify}, styles]
+  const localStyle= [globalStyles.row,{justifyContent: justify ?? "center"}, styles]
   
   return onPress ? (<TouchableOpacity activeOpacity={0.8} onPress={onPress} style={localStyle}>{children}</TouchableOpacity>):(
     <View style={localStyle}>

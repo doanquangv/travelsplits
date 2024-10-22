@@ -1,7 +1,9 @@
 import axios from 'axios'
 import qerryString from 'query-string'
 import { err } from 'react-native-svg'
+import { AppInfo } from '../constants/AppInfor'
 const axiosClient = axios.create({
+    baseURL: AppInfo.BASE_URL,
     paramsSerializer: params => qerryString.stringify(params),
 
 })

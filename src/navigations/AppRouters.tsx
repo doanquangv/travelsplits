@@ -29,10 +29,10 @@ const AppRouters = () => {
     const checkLogin = async () => {
       const res = await getItem()
            
-      res && dispatch(addAuth(JSON.parse(res)));
+      res && dispatch(addAuth((res)));
     }
 
-    
+
   return (
     <>
       {isShowSplash ? <SplashScreen/> : auth.accesstoken ? <MainNavigator /> : <AuthNavigator />}

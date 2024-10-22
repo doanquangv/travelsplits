@@ -1,5 +1,5 @@
 import { View, Text, Button, Image, Switch, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ButtonComponent, InputComponent, RowComponent, SectionComponent, SpaceComponent } from "../../components";
 import { globalStyles } from "../../styles/globalStyles";
@@ -20,7 +20,19 @@ const LoginScreen = ({navigation} : any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isRemember, setIsRemember] = useState(true)
+  const [isDisable, setIsDisable] = useState(true)
+
   const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    const emailValidation = Validate.email(email);
+    if (!email || !password || !emailValidation) {
+      setIsDisable(true)
+    } else {
+      setIsDisable(false)
+    }
+  },[email, password])
 
   const handleLogin = async () => {
 
@@ -29,7 +41,7 @@ const LoginScreen = ({navigation} : any) => {
 
       try{
         const res = await authenticationAPI.HandleAuthentication('/login', {email, password}, 'post');
-        
+
         dispatch(addAuth(res.data));
        
         await AsyncStorage.setItem('auth', isRemember? JSON.stringify(res.data): email);
@@ -73,10 +85,11 @@ const LoginScreen = ({navigation} : any) => {
       <RowComponent justify="space-between">
         <RowComponent onPress={()=> setIsRemember(!isRemember)}>
           <Switch trackColor={{true: appColors.primary}}  value={isRemember} onChange={() => setIsRemember(!isRemember)}/>
-          <TextComponent styles={{marginLeft:10}} text="Remenber me"/>
+          <SpaceComponent width={5} height={0} />
+          <TextComponent  text="Remenber me"/>
 
         </RowComponent>
-        <ButtonComponent text={"Forgot Password"}  onPress={() => navigation.navigate('ForgotPassword')} type="text"/>
+        <ButtonComponent text={"Forgot Password?"}  onPress={() => navigation.navigate('ForgotPassword')} type="text"/>
         
       </RowComponent>
 
@@ -85,12 +98,12 @@ const LoginScreen = ({navigation} : any) => {
       <SpaceComponent height={16} width={0} />
 
       <SectionComponent >
-        <ButtonComponent onPress={handleLogin} text={"Sign in"} type="primary" />
+        <ButtonComponent disable={isDisable} onPress={handleLogin} text={"Sign in"} type="primary" />
       </SectionComponent>
       <SocialLogin />
       <SectionComponent>
         <RowComponent justify="center">
-          <TextComponent text="Don't have an account"/>
+          <TextComponent text="Don't have an account?"/>
           <ButtonComponent type="link" text="Sign up" onPress={() => navigation.navigate(SignUpScreen)}/>
         </RowComponent>
       </SectionComponent>
