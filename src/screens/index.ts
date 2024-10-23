@@ -1,8 +1,14 @@
+import AddNewScreen from "./AddNewScreen";
 import ForgotPassword from "./auth/ForgotPassword";
 import LoginScreen from "./auth/LoginScreen";
 import SignUpScreen from "./auth/SignUpScreen";
 import Verification from "./auth/Verification";
-import HomeScreen from "./home/home";
+import EventDetail from "./events/eventDetail";
+import EventsScreen from "./events/EventsScreen";
+import HomeScreen from "./home/HomeScreen";
+import MapScreen from "./maps/MapScreen";
+import NotificationScreen from "./NotificationScreen";
+import ProfileScreen from "./profiles/ProfileScreen";
 import SplashScreen from "./SplashScreens";
 
-export {HomeScreen,LoginScreen,SplashScreen,ForgotPassword,SignUpScreen,Verification} 
+export {HomeScreen,LoginScreen,SplashScreen,ForgotPassword,SignUpScreen,Verification, MapScreen, EventsScreen,ProfileScreen,AddNewScreen, NotificationScreen, EventDetail} 

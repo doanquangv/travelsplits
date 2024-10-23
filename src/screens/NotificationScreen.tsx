@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Notifications = () => {
+const NotificationScreen = () => {
   return (
     <View>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -11,4 +11,4 @@ const Notifications = () => {
   )
 }
 
-export default Notifications
+export default NotificationScreen
