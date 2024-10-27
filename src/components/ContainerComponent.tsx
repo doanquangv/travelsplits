@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, ScrollView, Button } from "react-native";
+import { View, Text, ImageBackground, ScrollView, Button, StatusBar } from "react-native";
 import React, { ReactNode } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { globalStyles } from "../styles/globalStyles";
@@ -25,7 +25,7 @@ const ContainerComponent = (props: Props) => {
 
   const headerComponent = () => {
     return (
-      <View style={{ flex: 1, paddingTop: 10 }}>
+      <View style={{ flex: 1}}>
         {(title ||
           back) && (
             <RowComponent
@@ -60,7 +60,8 @@ const ContainerComponent = (props: Props) => {
     </ImageBackground>
   ) : (
     <SafeAreaView style={[globalStyles.container]}>
-      <View>{headerComponent()}</View>
+      <StatusBar barStyle={'dark-content'}/>
+      <View style={[globalStyles.container]}>{headerComponent()}</View>
     </SafeAreaView>
   );
 };

@@ -3,7 +3,7 @@ import ForgotPassword from "./auth/ForgotPassword";
 import LoginScreen from "./auth/LoginScreen";
 import SignUpScreen from "./auth/SignUpScreen";
 import Verification from "./auth/Verification";
-import EventDetail from "./events/eventDetail";
+import EventDetail from "./events/EventDetail";
 import EventsScreen from "./events/EventsScreen";
 import HomeScreen from "./home/HomeScreen";
 import MapScreen from "./maps/MapScreen";

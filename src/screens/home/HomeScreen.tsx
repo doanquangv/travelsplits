@@ -1,39 +1,69 @@
-import React, { useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import { HambergerMenu, Notification, SearchNormal1 } from "iconsax-react-native";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Button,
-  Pressable,
-  StatusBar,
-  Platform,
-  ScrollView,
-  TextInput,
   FlatList,
+  Platform,
+  StatusBar,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
-import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
-import CreateModal from "../../components/features/create.modal";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
-import { authSelector, removeAuth } from "../../redux/reducers/authReducer";
-import { Use } from "react-native-svg";
-import ContainerComponent from "../../components/ContainerComponent";
-import { globalStyles } from "../../styles/globalStyles";
-import { Arrow, ArrowDown, HambergerMenu, Notification, Scroll, SearchNormal1, Status } from "iconsax-react-native";
-import { appColors } from "../../constants/appColors";
 import { CircleComponent, RowComponent, SectionComponent, SpaceComponent, TabBarComponent } from "../../components";
-import TextComponent from "../../components/TextComponent";
-import { fontFamily } from "../../constants/fontFamilies";
 import EventItem from "../../components/EventItem";
+import TextComponent from "../../components/TextComponent";
+import { appColors } from "../../constants/appColors";
+import { fontFamily } from "../../constants/fontFamilies";
+import { authSelector } from "../../redux/reducers/authReducer";
+import { globalStyles } from "../../styles/globalStyles";
+import * as Location from 'expo-location';
+import axios from "axios";
+import { Address } from "react-native-maps";
+import { AddressModel } from "../../models/AddressModel";
 
 
 const HomeScreen = () => {
+  
+  const [currentLocation, setCurrentLocation] = useState<AddressModel>()
+
   const dispatch = useDispatch();
   const auth = useSelector(authSelector);
 
+  useEffect(() => {
+    const getPermission = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+
+      const position = await Location.getCurrentPositionAsync({}); // Sửa lỗi ở đây
+      if (position.coords) {
+        reverseGeocode({lat: position.coords.latitude, long: position.coords.longitude});
+      }
+    }
+    getPermission();
+  },[]);
+
+  const reverseGeocode = async ({lat, long}: {lat:number; long: number}) => {
+    const api= `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VI&apikey=zSkRid2amrSBnEn9rFAVKhc0bjcLU3Aa8MaAVXRFmx8`
+
+    try {
+      const res = await axios(api);
+      if (res && res.status === 200 && res.data) {
+        const items = res.data.items;
+        setCurrentLocation(items[0]);
+        
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
   const itemEvent= {
-    title:'International Band Music Concert',
+    title:'Chuyến đi leo núi 2024',
     descreption:'Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase. Read More...',
     location:{
       title: 'Gala Convention Center',
@@ -46,6 +76,10 @@ const HomeScreen = () => {
     endAt: Date.now(),
     date: Date.now(),
   }
+ 
+  
+  
+  
   return (
     <View style={[globalStyles.container]}>
       <StatusBar barStyle="light-content" />
@@ -68,7 +102,12 @@ const HomeScreen = () => {
             <TextComponent text='Current Location' color={appColors.white2} size={12}/>
             <MaterialIcons name='arrow-drop-down' color={appColors.white} size={18} />
           </RowComponent>
-          <TextComponent text='Hanoi, Vietnam' flex={0} color={appColors.white2} font={fontFamily.bold} size={13}/>
+          {
+            currentLocation &&(
+              <TextComponent text={`${currentLocation.address.district}, ${currentLocation.address.city}, ${currentLocation.address.county}`} flex={0} color={appColors.white2} font={fontFamily.bold} size={13}/>
+
+            )
+          }
           </View>
 
           <CircleComponent color="#D1C4E9">
@@ -76,8 +115,8 @@ const HomeScreen = () => {
           </CircleComponent>
         </RowComponent>
         <SpaceComponent height={30} />
-        <RowComponent>
-          <RowComponent>
+        <RowComponent styles={{justifyContent:'flex-start'}}>
+          <RowComponent >
             <SearchNormal1 variant="TwoTone" color={appColors.white } size={20}/>
             <View style={{width:1, backgroundColor:appColors.white,marginHorizontal:10, height:18}}></View>
             <TextInput placeholder="search" style={[globalStyles.text]}/>

@@ -5,17 +5,6 @@ export const fontFamily = {
     light: 'NotoSans-Light',
     medium: 'NotoSans-Medium',
     semibold: 'NotoSans-SemiBold',
-    NotoSansThin: 'NotoSans-Thin',
-    NotoSansExtraLight: 'NotoSans-ExtraLight',
-    NotoSansBlack: 'NotoSans-Black',
-    NotoSansExtraBold: 'NotoSans-ExtraBold',
-    NotoSansExtraBoldItalic: 'NotoSans-ExtraBoldItalic',
-    NotoSansBlackItalic: 'NotoSans-BlackItalic',
-    NotoSansBoldItalic: 'NotoSans-BoldItalic',
-    NotoSansExtraLightItalic: 'NotoSans-ExtraLightItalic',
-    NotoSansLightItalic: 'NotoSans-LightItalic',
-    NotoSansMediumItalic: 'NotoSans-MediumItalic',
-    NotoSansSemiBoldItalic: 'NotoSans-SemiBoldItalic',
-    NotoSansThinItalic: 'NotoSans-ThinItalic',
+   
    
 }

@@ -10,4 +10,5 @@ import ListComponent from './ListComponent';
 import AvataGroup from './AvataGroup';
 
 
-export{SpaceComponent,TextComponent, ButtonComponent, InputComponent,SectionComponent, RowComponent, CircleComponent,TabBarComponent,ListComponent,AvataGroup};
+
+export{SpaceComponent,TextComponent, ButtonComponent, InputComponent,SectionComponent, RowComponent, CircleComponent,TabBarComponent,ListComponent,AvataGroup,};

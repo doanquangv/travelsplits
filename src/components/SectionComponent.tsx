@@ -11,7 +11,7 @@ const SectionComponent = (prop: Props) => {
 
     const { children, styles } = prop;
   return (
-    <View style={[globalStyles.section, styles]}>
+    <View style={[globalStyles.section,{}, styles]}>
       {children}
     </View>
   )

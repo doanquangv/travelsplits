@@ -21,6 +21,7 @@ const LoginScreen = ({navigation} : any) => {
   const [password, setPassword] = useState("");
   const [isRemember, setIsRemember] = useState(true)
   const [isDisable, setIsDisable] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const dispatch = useDispatch();
 
@@ -38,7 +39,7 @@ const LoginScreen = ({navigation} : any) => {
 
     const emailValidation = Validate.email(email);
     if (emailValidation) {
-
+      setIsLoading(true)
       try{
         const res = await authenticationAPI.HandleAuthentication('/login', {email, password}, 'post');
 
@@ -46,7 +47,7 @@ const LoginScreen = ({navigation} : any) => {
        
         await AsyncStorage.setItem('auth', isRemember? JSON.stringify(res.data): email);
         
-        
+        setIsLoading(false)
       } catch (error) {
         console.log(error)
       }
@@ -98,7 +99,7 @@ const LoginScreen = ({navigation} : any) => {
       <SpaceComponent height={16} width={0} />
 
       <SectionComponent >
-        <ButtonComponent disable={isDisable} onPress={handleLogin} text={"Sign in"} type="primary" />
+        <ButtonComponent disable={isLoading||isDisable} onPress={handleLogin} text={"Sign in"} type="primary" />
       </SectionComponent>
       <SocialLogin />
       <SectionComponent>

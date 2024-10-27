@@ -7,46 +7,41 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import {
-  CircleComponent,
-  RowComponent,
-  SectionComponent,
-  SpaceComponent,
-  TabBarComponent
-} from "../../components";
-import TextComponent from "../../components/TextComponent";
-import { appColors } from "../../constants/appColors";
-import { fontFamily } from "../../constants/fontFamilies";
-import { eventModel } from "../../models/eventModel";
-import { globalStyles } from "../../styles/globalStyles";
-import CardComponent from "../../components/CardComponent";
+
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { eventModel } from "../../../models/eventModel";
+import { CircleComponent, RowComponent, SectionComponent, SpaceComponent } from "../../../components";
+import { appColors } from "../../../constants/appColors";
+import TextComponent from "../../../components/TextComponent";
+import { globalStyles } from "../../../styles/globalStyles";
+import CardComponent from "../../../components/CardComponent";
+import { fontFamily } from "../../../constants/fontFamilies";
 
 const EventDetail = ({ navigation, route }: any) => {
   const {item}: {item: eventModel} = route.params;
   const [tabSelected, setTabSelected] = useState("expenses");
-  const tabs = [
-    {
-      key: "expenses",
-      content: "Chi Phí",
-    },
-    {
-      key: "feeds",
-      content: "Bảng tin",
-    },
-    {
-      key: "schedule",
-      content: "Lịch trình",
-    },
-    {
-      key: "members",
-      content: "Thành viên",
-    },
-  ];
+  // const tabs = [
+  //   {
+  //     key: "expenses",
+  //     content: "Chi Phí",
+  //   },
+  //   {
+  //     key: "feeds",
+  //     content: "Bảng tin",
+  //   },
+  //   {
+  //     key: "schedule",
+  //     content: "Lịch trình",
+  //   },
+  //   {
+  //     key: "members",
+  //     content: "Thành viên",
+  //   },
+  // ];
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground
-        source={require("../../assets/images/travel.png")}
+        source={require("../../../assets/images/travel.png")}
         style={{ height: 244 }}
         imageStyle={{
           resizeMode: "cover",
@@ -73,7 +68,7 @@ const EventDetail = ({ navigation, route }: any) => {
         </LinearGradient>
       </ImageBackground>
      
-        <RowComponent styles={{backgroundColor:appColors.white}}>
+        {/* <RowComponent styles={{backgroundColor:appColors.white}}>
           {tabs.map((item) => (
             <TouchableOpacity
               onPress={() => setTabSelected(item.key)}
@@ -106,7 +101,7 @@ const EventDetail = ({ navigation, route }: any) => {
               />
             </TouchableOpacity>
           ))}
-        </RowComponent>
+        </RowComponent> */}
       <ScrollView showsVerticalScrollIndicator={false}  style={{flex :1, padding:20}}>
         <SectionComponent  styles={[globalStyles.shadow,{backgroundColor:appColors.white, borderRadius:25}]}>
           <View style={[globalStyles.center,{paddingTop:10}]}>

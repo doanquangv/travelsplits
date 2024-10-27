@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface AuthState {
+    fullname: string,
     id: string,
     email: string,
     accesstoken: string,
@@ -9,6 +10,7 @@ interface AuthState {
 
 
 const initialState : AuthState = {
+    fullname: '',
     id:'',
     email:'',
     accesstoken:'',

@@ -1,9 +1,10 @@
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, KeyboardType } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, KeyboardType, StyleProp, ViewStyle } from "react-native";
 import React, { ReactNode, useState } from "react";
 import { appColors } from "../constants/appColors";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { EyeSlash } from "iconsax-react-native";
 import { globalStyles } from "../styles/globalStyles";
+
 
 interface Props {
   value: string;
@@ -15,6 +16,9 @@ interface Props {
   allowClear?: boolean;
   type?: KeyboardType;
   onEnd?: () => void;
+  multiline?: boolean;
+  numberOfLines?: number;
+  styles?: StyleProp<ViewStyle>
 }
 
 const InputComponent = (props: Props) => {
@@ -27,16 +31,21 @@ const InputComponent = (props: Props) => {
     isPassword,
     allowClear,
     type,
-    onEnd
+    onEnd,
+    multiline,
+    numberOfLines,
+    styles
   } = props;
 
   const [isShowPass, setIsShowPass] = useState(isPassword ?? false);
 
   return (
-    <View style={[styles.inputContainer]}>
+    <View style={[globalStyles.inputContainer, {
+      alignItems: multiline ? 'flex-start' : 'center',
+    }, styles]}>
       {affix ?? affix}
       <TextInput
-        style={[styles.input, globalStyles.text]}
+        style={[globalStyles.input, globalStyles.text, {paddingHorizontal: affix || suffix ? 12 : 0}]}
         value={value}
         placeholder={placeholder ?? ""}
         onChangeText={(val) => onChange(val)}
@@ -45,6 +54,8 @@ const InputComponent = (props: Props) => {
         keyboardType={type ?? 'default'}
         autoCapitalize="none"
         onEndEditing={onEnd}
+        multiline={multiline}
+        numberOfLines={numberOfLines}
       />
       {suffix ?? suffix}
 
@@ -67,25 +78,3 @@ const InputComponent = (props: Props) => {
 
 export default InputComponent;
 
-const styles = StyleSheet.create({
-  inputContainer: {
-    flexDirection: "row",
-    borderRadius:12,
-    borderWidth: 1,
-    borderColor: appColors.border,
-    width: "100%",
-    minHeight: 56,
-    alignItems: "center",
-    justifyContent: 'center',
-    paddingHorizontal:15,
-    backgroundColor: appColors.white,
-    marginBottom: 20,
-  },
-  input:{
-    padding:0,
-    margin:0,
-    flex:1,
-    paddingHorizontal:14,
-    color: appColors.text,
-  }
-})

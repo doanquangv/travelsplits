@@ -11,6 +11,7 @@ import { appColors } from '../constants/appColors'
 import SpaceComponent from './SpaceComponent'
 import ContainerComponent from './ContainerComponent'
 import SectionComponent from './SectionComponent'
+import { useNavigation } from '@react-navigation/native'
 
 interface Props{
     item: eventModel,
@@ -20,9 +21,9 @@ interface Props{
 const EventItem = (props: Props) => {
     const {item, type} = props
     
-    
+const navigation: any = useNavigation()   
   return (
-    <ListComponent isShadow styles={{width: AppInfo.sizes.WIDTH*0.85}} onPress={() =>{}}>
+    <ListComponent isShadow styles={{width: AppInfo.sizes.WIDTH*0.85}} onPress={() =>navigation.navigate('EventDetail', {item})}>
         <RowComponent  >
           
             <ImageBackground style={{height:60, width:60, padding:10}} source={require('../assets/images/travel.png')} imageStyle={{ resizeMode:'cover', borderRadius:12}} />

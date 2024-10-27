@@ -22,7 +22,7 @@
       "bundleIdentifier": "com.travelsplitscompany.travelsplits",
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyA4LqIXokYpSBxhZuPnkMetkXcG3zavFpg"
+        "googleMapsApiKey": "AIzaSyCSIz9HM592pvONJ1i-dQuu0_QQ6sEUkSo"
       }
     },
     "android": {
@@ -38,7 +38,13 @@
     "plugins": [
       "expo-font",
       "expo-asset",
-      "expo-router"
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow TravelSplits to use your location."
+        }
+      ]
     ]
   }
 }

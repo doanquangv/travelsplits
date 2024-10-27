@@ -48,5 +48,49 @@ export const globalStyles = StyleSheet.create({
         marginVertical: 10,
         // marginBottom:16
 
+    },
+    card: {
+        borderRadius: 12,
+        backgroundColor: appColors.white,
+        padding: 12,
+        marginHorizontal: 12,
+        marginVertical: 6,
+        marginBottom: 16,
+    },
+    noSpaceCard: {
+        alignItems: 'center',
+        width: 45,
+        margin: 0,
+        padding: 0,
+        marginVertical: 0,
+        marginHorizontal: 0,
+        marginBottom: 0,
+        height: 45,
+        justifyContent: 'center',
+    },
+    center: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    inputContainer: {
+        flexDirection: "row",
+        borderRadius:12,
+        borderWidth: 1,
+        borderColor: appColors.border,
+        width: "100%",
+        minHeight: 56,
+        paddingVertical:16,
+        alignItems: "center",
+        justifyContent: 'center',
+        paddingHorizontal:15,
+        backgroundColor: appColors.white,
+        marginBottom: 20,
+    },
+    input:{
+        padding:0,
+        margin:0,
+        flex:1,
+        // paddingHorizontal:14,
+        color: appColors.text,
     }
 });
