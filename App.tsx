@@ -1,30 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { StatusBar } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import SplashScreens from './src/screens/SplashScreens';
 import { useFonts } from 'expo-font';
-import store from './src/redux/store';
+import * as SplashScreen from 'expo-splash-screen';
+import React, { useEffect } from 'react';
+import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import AppRouters from './src/navigations/AppRouters';
+import store from './src/redux/store';
+
+SplashScreen.preventAutoHideAsync();
 
 const App = () => {
   const [loaded, error] = useFonts({    
-    regular: require('./assets/fonts/NotoSans-Regular.ttf'),
-    bold: require('./assets/fonts/NotoSans-Bold.ttf'),
-    light: require('./assets/fonts/NotoSans-Light.ttf'),
-    medium: require('./assets/fonts/NotoSans-Medium.ttf'),
-    semibold: require('./assets/fonts/NotoSans-SemiBold.ttf'),
+    'NotoSans-Regular': require('./assets/fonts/NotoSans-Regular.ttf'),
+    'NotoSans-Bold': require('./assets/fonts/NotoSans-Bold.ttf'),
+    'NotoSans-Light': require('./assets/fonts/NotoSans-Light.ttf'),
+    'NotoSans-Medium': require('./assets/fonts/NotoSans-Medium.ttf'),
+    'NotoSans-SemiBold': require('./assets/fonts/NotoSans-SemiBold.ttf'),
   });
 
   useEffect(() => {
-    if (loaded || error) {
+    if (loaded) { // Chỉ ẩn khi font được tải thành công
       SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  }, [loaded]);
 
-  if (!loaded && !error) {
+  if (!loaded) {
+    if (error) {
+      console.error('Lỗi khi tải font:', error);
+      // Xử lý lỗi, ví dụ: hiển thị thông báo lỗi
+    }
     return null;
   }
   return (

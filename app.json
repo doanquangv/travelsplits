@@ -8,13 +8,13 @@
     "slug": "travelsplits",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/image/icon.png",
+    
     "userInterfaceStyle": "light",
     "permissions": [
       "location"
     ],
     "splash": {
-      "image": "./assets/image/icon.png",
+      
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -26,10 +26,7 @@
       }
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
+      "googleServicesFile": "./google-services.json",
       "package": "com.travelsplitscompany.travelsplits"
     },
     "web": {

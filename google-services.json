@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "297189314528",
+    "project_id": "travelsplits-4ce44",
+    "storage_bucket": "travelsplits-4ce44.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297189314528:android:4887cf9993ff7a454f2585",
+        "android_client_info": {
+          "package_name": "com.travelsplitscompany.travelsplits"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt0R0vReYMmyqx4SS9uUI3GR64ZhsVIxA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
