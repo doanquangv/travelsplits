@@ -1,9 +1,9 @@
 import { View, Text, StyleProp, ViewStyle } from 'react-native'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { globalStyles } from '../styles/globalStyles';
 
 interface Props {
-    children: React.ReactNode;
+    children: ReactNode;
     styles?: StyleProp<ViewStyle>;
 }
 

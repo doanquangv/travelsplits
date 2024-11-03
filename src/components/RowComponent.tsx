@@ -1,11 +1,11 @@
 import { View, Text, StyleProp, ViewStyle, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { globalStyles } from '../styles/globalStyles';
 
 interface Props {
     justify?:"center" | "flex-start" | "flex-end" | "space-between" | "space-around" | "space-evenly" | undefined,
     styles?: StyleProp<ViewStyle>;
-    children: React.ReactNode;
+    children: ReactNode;
     onPress?: () => void;
 }
 

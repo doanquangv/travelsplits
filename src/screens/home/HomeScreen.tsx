@@ -27,6 +27,9 @@ const HomeScreen = () => {
   
   const [currentLocation, setCurrentLocation] = useState<AddressModel>()
 
+  // console.log(process.env.MAP_API_KEY);
+  
+
   const dispatch = useDispatch();
   const auth = useSelector(authSelector);
 
@@ -47,7 +50,11 @@ const HomeScreen = () => {
   },[]);
 
   const reverseGeocode = async ({lat, long}: {lat:number; long: number}) => {
-    const api= `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VI&apikey=zSkRid2amrSBnEn9rFAVKhc0bjcLU3Aa8MaAVXRFmx8`
+    // const api= `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAOOHpaqJ0ofAOmwjtdvUHkbp4g761c1kM`
+    // const api= `https://maps.googleapis.com/maps/api/geocode/json?address=${lat},${long}&key=AIzaSyBQCV-4cbcvDdLt8UEDAw5FK78Fe6mnamQ`
+     const api= `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VI&apikey=zSkRid2amrSBnEn9rFAVKhc0bjcLU3Aa8MaAVXRFmx8`
+
+   
 
     try {
       const res = await axios(api);

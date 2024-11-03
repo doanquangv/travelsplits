@@ -27,7 +27,8 @@
     },
     "android": {
       "googleServicesFile": "./google-services.json",
-      "package": "com.travelsplitscompany.travelsplits"
+      "package": "com.travelsplitscompany.travelsplits",
+      "googleMapsApiKey": "AIzaSyAOOHpaqJ0ofAOmwjtdvUHkbp4g761c1kM"
     },
     "web": {
       "favicon": "./assets/favicon.png"
