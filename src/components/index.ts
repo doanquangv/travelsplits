@@ -10,7 +10,9 @@ import ListComponent from './ListComponent';
 import AvataGroup from './AvataGroup';
 import DateTime from './TimePicker';
 import TimePicker from './TimePicker';
+import DropdownPicker from './DropdownPicker';
+import ButtonImagePicker from './ButtonImagePicker';
 
 
 
-export{SpaceComponent,TextComponent, ButtonComponent, InputComponent,SectionComponent, RowComponent, CircleComponent,TabBarComponent,ListComponent,AvataGroup,TimePicker};
+export{SpaceComponent,TextComponent, ButtonComponent, InputComponent,SectionComponent, RowComponent, CircleComponent,TabBarComponent,ListComponent,AvataGroup,TimePicker,DropdownPicker,ButtonImagePicker};

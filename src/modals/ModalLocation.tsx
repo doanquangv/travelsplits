@@ -66,9 +66,9 @@ const ModalLocation = (props: Props) => {
     getPermission();
   }, []);
 
-  useEffect(() => {
-    // console.log(addressSelected);
-  }, [addressSelected]);
+  // useEffect(() => {
+  //   // console.log(addressSelected);
+  // }, [addressSelected]);
 
   useEffect(() => {
     if (!searchKey) {
@@ -97,7 +97,7 @@ const ModalLocation = (props: Props) => {
 
   const handleSearchLocation = async () => {
     const api = `https://autocomplete.search.hereapi.com/v1/autocomplete?q=${searchKey}&limit=10&apiKey=zSkRid2amrSBnEn9rFAVKhc0bjcLU3Aa8MaAVXRFmx8`;
-    // const api = `https://autocomplete.search.hereapi.com/v1/autocomplete?q=${searchKey}&limit=AIzaSyBQCV-4cbcvDdLt8UEDAw5FK78Fe6mnamQ`;
+    
 
     try {
       setIsLoading(true);
@@ -173,8 +173,8 @@ const ModalLocation = (props: Props) => {
           <MapView
             style={{
               width: AppInfo.sizes.WIDTH,
-              height: AppInfo.sizes.HEIGHT * 0.5,
-              marginVertical: 65,
+              height: AppInfo.sizes.HEIGHT -230,
+              marginVertical: 70,
               zIndex: -1,
             }}
             showsUserLocation={true}
@@ -184,13 +184,15 @@ const ModalLocation = (props: Props) => {
               latitudeDelta: 0.01,
               longitudeDelta: 0.01,
             }}
+            onPress={event => console.log(event.nativeEvent.coordinate)
+            }
             region={{
               latitude: currentLocation.lat,
               longitude: currentLocation.long,
               latitudeDelta: 0.01,
               longitudeDelta: 0.01,
             }}
-            mapType="standard"
+            mapType="terrain"
             // onRegionChange={val => console.log(val)}
           >
             <Marker
@@ -202,15 +204,25 @@ const ModalLocation = (props: Props) => {
             />
           </MapView>
         )}
+         <View
+          style={{
+            position: 'absolute',
+            bottom: 70,
+            left: 0,
+            right: 0,
+          }}>
+            <ButtonComponent
+              styles={{marginBottom: 70}}
+              text="Xác nhận"
+              onPress={() => {
+                onSelect({ address: addressSelected, position: currentLocation });
+                onClose();
+              }}
+              type="primary"
+            />
+        </View>
 
-        <ButtonComponent
-          text="Xác nhận"
-          onPress={() => {
-            onSelect({ address: addressSelected, position: currentLocation });
-            onClose();
-          }}
-          type="primary"
-        />
+        
       </View>
     </Modal>
   );

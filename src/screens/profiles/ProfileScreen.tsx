@@ -48,7 +48,7 @@ const ProfileScreen = () => {
         </SectionComponent>
         <SectionComponent styles={[globalStyles.card, {backgroundColor:appColors.white2}]}>
         <ButtonComponent onPress={async () => {
-          await AsyncStorage.setItem('auth', auth.email)
+          // await AsyncStorage.setItem('auth', auth.email)
           dispatch(removeAuth({}))
           
         }} type='text' text='Đăng xuất' />

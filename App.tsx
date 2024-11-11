@@ -6,6 +6,8 @@ import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import AppRouters from './src/navigations/AppRouters';
 import store from './src/redux/store';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Host } from 'react-native-portalize';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,14 +35,17 @@ const App = () => {
   }
   return (
     <>
-      <Provider store={store}>
-        <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Provider store={store}>
+          <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
 
-        <NavigationContainer>
-          <AppRouters /> 
-        </NavigationContainer>
-
-      </Provider>
+        <Host>
+          <NavigationContainer>
+             <AppRouters /> 
+          </NavigationContainer>
+        </Host>
+        </Provider>
+      </GestureHandlerRootView>
     </>
   );
 }

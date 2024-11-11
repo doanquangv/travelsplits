@@ -67,7 +67,7 @@ const InputComponent = (props: Props) => {
         {isPassword ? (
           <FontAwesome name={isShowPass ? 'eye-slash': 'eye'} size={22} color={appColors.gray} />
         ) : (
-          value.length > 0 && allowClear && (
+          value &&  value.length > 0 && allowClear && (
             <AntDesign name="close" size={22} color={appColors.text} />
           )
         )}

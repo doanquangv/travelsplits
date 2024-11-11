@@ -10,7 +10,7 @@ const HomeNavigator = () => {
           screenOptions={{headerShown: false}}
       >
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
-          <Stack.Screen name="EventDetail" component={EventDetail} />
+          {/* <Stack.Screen name="EventDetail" component={EventDetail} /> */}
       </Stack.Navigator>
     )
 }

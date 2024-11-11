@@ -50,6 +50,8 @@ const LoginScreen = ({navigation} : any) => {
         setIsLoading(false)
       } catch (error) {
         console.log(error)
+
+        setIsLoading(false)
       }
     }else {
       Alert.alert('Email is not valid')

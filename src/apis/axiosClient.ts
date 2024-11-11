@@ -2,6 +2,15 @@ import axios from 'axios'
 import qerryString from 'query-string'
 import { err } from 'react-native-svg'
 import { AppInfo } from '../constants/AppInfor'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+
+const getAccessToken = async () => {
+    const res = await AsyncStorage.getItem('auth')
+
+    return res ? JSON.parse(res).accesstoken : '';
+}
+
 const axiosClient = axios.create({
     baseURL: AppInfo.BASE_URL,
     paramsSerializer: params => qerryString.stringify(params),
@@ -9,10 +18,13 @@ const axiosClient = axios.create({
 })
 
 axiosClient.interceptors.request.use(async (config:any) => {
+
+    const accesstoken = await getAccessToken()
+
     config.headers = {
-        Authorization: '',
+        Authorization: accesstoken ? `Bearer ${accesstoken}` : '',
         Accept: 'application/json',
-        ...config.headers
+        ...config.headers,
     }
 
     config.data
@@ -23,10 +35,10 @@ axiosClient.interceptors.response.use(res => {
     if (res.data && res.status === 200) {
         return res.data
     }
-    throw new Error('Error')
+    throw err
 }, error => {
     console.log(`error api ${JSON.stringify(error)}`)
-    throw new Error(error.response)
+    throw error
 })
 
 export default axiosClient
