@@ -66,6 +66,8 @@ const ModalLocation = (props: Props) => {
     getPermission();
   }, []);
 
+  
+
   // useEffect(() => {
   //   // console.log(addressSelected);
   // }, [addressSelected]);

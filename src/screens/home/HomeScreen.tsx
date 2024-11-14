@@ -1,6 +1,8 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import axios from "axios";
+import * as Location from 'expo-location';
 import { HambergerMenu, Notification, SearchNormal1 } from "iconsax-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   FlatList,
   Platform,
@@ -10,28 +12,64 @@ import {
   View
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import eventAPI from "../../apis/eventApi";
 import { CircleComponent, RowComponent, SectionComponent, SpaceComponent, TabBarComponent } from "../../components";
 import EventItem from "../../components/EventItem";
 import TextComponent from "../../components/TextComponent";
 import { appColors } from "../../constants/appColors";
 import { fontFamily } from "../../constants/fontFamilies";
-import { authSelector } from "../../redux/reducers/authReducer";
-import { globalStyles } from "../../styles/globalStyles";
-import * as Location from 'expo-location';
-import axios from "axios";
-import { Address } from "react-native-maps";
 import { AddressModel } from "../../models/AddressModel";
+import { authSelector } from "../../redux/reducers/authReducer";
+import { eventSelector, setEvents } from "../../redux/reducers/eventReducer";
+import { globalStyles } from "../../styles/globalStyles";
+
 
 
 const HomeScreen = () => {
   
   const [currentLocation, setCurrentLocation] = useState<AddressModel>()
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
 
   // console.log(process.env.MAP_API_KEY);
   
 
   const dispatch = useDispatch();
   const auth = useSelector(authSelector);
+  const events = useSelector(eventSelector);
+  
+
+  // Trong HomeScreen.js
+
+  const fetchEvents = useCallback (async () => {
+    try {
+      const api = '/get-events'; // Thay thế bằng endpoint API của bạn
+      const res = await eventAPI.HandleEvent(api); 
+      // console.log(res);
+      
+      if (res && res.data) {
+        console.log("Dispatching action setEvents with payload:", res);
+        dispatch(setEvents(res.data)); // Truyền đúng dữ liệuRedux store
+      }
+    
+      
+      setIsLoading(false);
+      
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách sự kiện:', error);
+      // Xử lý lỗi, ví dụ: hiển thị thông báo lỗi
+    }
+  },[dispatch])
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
+  // useEffect(() => {
+  //   console.log("Updated events:", events);
+  // }, [events]);
+
 
   useEffect(() => {
     const getPermission = async () => {
@@ -50,9 +88,8 @@ const HomeScreen = () => {
   },[]);
 
   const reverseGeocode = async ({lat, long}: {lat:number; long: number}) => {
-    // const api= `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAOOHpaqJ0ofAOmwjtdvUHkbp4g761c1kM`
-    // const api= `https://maps.googleapis.com/maps/api/geocode/json?address=${lat},${long}&key=AIzaSyBQCV-4cbcvDdLt8UEDAw5FK78Fe6mnamQ`
-     const api= `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VI&apikey=zSkRid2amrSBnEn9rFAVKhc0bjcLU3Aa8MaAVXRFmx8`
+    
+     const api= `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VI&apikey=${process.env.HERE_API_KEY}`
 
    
 
@@ -64,25 +101,30 @@ const HomeScreen = () => {
         
       }
     } catch (error) {
-      console.log(error);
+      console.error('Lỗi khi reverse geocode:', error);
       
     }
   }
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchEvents();
+    setRefreshing(false);
+  }, [fetchEvents]);
 
-  const itemEvent= {
-    title:'Chuyến đi leo núi 2024',
-    descreption:'Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase. Read More...',
-    location:{
-      title: 'Gala Convention Center',
-      address:'36 Guild Street London, UK ',
-    },
-    imageUral:'',
-    users:[''],
-    authorId:'',
-    startAt: Date.now(),
-    endAt: Date.now(),
-    date: Date.now(),
-  }
+  // const itemEvent= {
+  //   title:'Chuyến đi leo núi 2024',
+  //   descreption:'Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase. Read More...',
+  //   location:{
+  //     title: 'Gala Convention Center',
+  //     address:'36 Guild Street London, UK ',
+  //   },
+  //   imageUral:'',
+  //   users:[''],
+  //   authorId:'',
+  //   startAt: Date.now(),
+  //   endAt: Date.now(),
+  //   date: Date.now(),
+  // }
  
   
   
@@ -137,211 +179,32 @@ const HomeScreen = () => {
         <SectionComponent styles={{paddingTop: 20}}>
 
           <TabBarComponent title="My Event" onPress={() => {}}/>
-          <FlatList data={Array.from({length: 5})} renderItem={({item, index}) => <EventItem key={`event${index}`} item={itemEvent} type="list"/>}/>
+          {/* <FlatList data={Array.from({length: 5})} renderItem={({item, index}) => <EventItem key={`event${index}`} item={itemEvent} type="list"/>}/> */}
+          
+          <FlatList
+            data={events}
+            keyExtractor={(item, index) => item._id ? item._id : index.toString()}
+            renderItem={({ item }) => (
+              <EventItem item={item} type="list" />
+            )}
+            showsVerticalScrollIndicator={false}
+            ListFooterComponent={<View style={{ height: 20 }} />}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+
+        />
+
         </SectionComponent>
       </View>
+      
     </View>
   );
 };
 // const dispatch = useDispatch();
 // const auth = useSelector(authSelector);
 
-// const [isModalVisible, setModalVisible] = useState(false);
 
-// return (
-//   <View style={styles.container}>
-//     <View style={styles.contentContainer}>
-//       {/* Tổng chi phí */}
-//       <View style={styles.headerContainer}>
-//         <Text style={styles.totalCostLabel}>Tổng chi phí</Text>
-//         <Text style={styles.totalCost}>0 đ</Text>
-//       </View>
-
-//       {/* Nợ và Bị nợ */}
-//       <View style={styles.debtContainer}>
-//         <View style={styles.debtItem}>
-//           <FontAwesome name="arrow-circle-up" size={24} color="red" />
-//           <Text style={styles.debtLabel}> Còn Nợ</Text>
-//           <Text style={styles.debtAmount}>0 đ</Text>
-//         </View>
-//         <View style={styles.debtItem}>
-//           <FontAwesome name="arrow-circle-down" size={24} color="green" />
-//           <Text style={styles.debtLabel}>Bị Nợ</Text>
-//           <Text style={styles.debtAmount}>0 đ</Text>
-//         </View>
-//       </View>
-
-//       {/* All time */}
-//       <TouchableOpacity style={styles.allTimeButton}>
-//         <Text style={styles.allTimeText}>All time</Text>
-//       </TouchableOpacity>
-
-//       {/* Khu vực sự kiện */}
-//       <View style={styles.eventContainer}>
-//         <Text style={styles.noEventText}>Không có sự kiện nào</Text>
-//         <Text style={styles.eventInstruction}>
-//           Tạo một sự kiện để theo dõi và quản lý chi phí nhóm của bạn
-//         </Text>
-
-//         <Pressable
-//           style={({ pressed }) => [
-//             { backgroundColor: pressed ? "gray" : "#B198BD" },
-//             styles.createEventButton,
-//           ]}
-//           onPress={() => {
-//             setModalVisible(true);
-//           }}
-//         >
-//           <Text style={styles.createEventText}>Nhấn vào tôi</Text>
-//         </Pressable>
-
-//         <CreateModal
-//           modalVisible={isModalVisible}
-//           setModalVisible={setModalVisible}
-//         />
-
-//         <Text style={styles.orText}>hoặc có thể tham gia bằng</Text>
-//         <Pressable
-//           style={styles.qrButton}
-//           onPress={async () => {
-//             await AsyncStorage.setItem("auth", auth.email);
-//             dispatch(removeAuth({}));
-//           }}
-//         >
-//           <Text style={styles.qrText}>Quét mã QR sự kiện</Text>
-//         </Pressable>
-//       </View>
-//     </View>
-
-//     {/* Thanh điều hướng */}
-//     {/* <View style={styles.navBar}>
-//       <TouchableOpacity>
-//         <Ionicons name="calendar-outline" size={28} color="#B198BD" />
-//         <Text style={styles.navLabel}>Trang chủ</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity>
-//         <Ionicons name="map-outline" size={28} color="#B198BD" />
-//         <Text style={styles.navLabel}>Khám phá</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity style={styles.addButton}>
-//         <Ionicons name="add" size={28} color="#fff" />
-//       </TouchableOpacity>
-//       <TouchableOpacity>
-//         <Ionicons name="notifications-outline" size={28} color="#B198BD" />
-//         <Text style={styles.navLabel}>Thông báo</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity>
-//         <Ionicons name="person-outline" size={28} color="#B198BD" />
-//         <Text style={styles.navLabel}>Hồ sơ</Text>
-//       </TouchableOpacity>
-//     </View> */}
-//   </View>
-// );
-
-// const styles = StyleSheet.create({
-//   container: {
-//     // flex: 1,
-//     justifyContent: "space-between",
-//     backgroundColor: "#fff",
-//   },
-//   contentContainer: {
-//     // flex: 1,
-//     // padding: ,
-//   },
-//   headerContainer: {
-//     alignItems: "center",
-//   },
-//   totalCostLabel: {
-//     fontSize: 18,
-//     marginTop: 8,
-//   },
-//   totalCost: {
-//     fontSize: 32,
-//     fontWeight: "bold",
-//   },
-//   debtContainer: {
-//     flexDirection: "row",
-//     justifyContent: "space-around",
-//     marginVertical: 20,
-//   },
-//   debtItem: {
-//     alignItems: "center",
-//   },
-//   debtLabel: {
-//     fontSize: 16,
-//     marginTop: 8,
-//   },
-//   debtAmount: {
-//     fontSize: 18,
-//     fontWeight: "bold",
-//   },
-//   allTimeButton: {
-//     alignItems: "center",
-//     paddingVertical: 8,
-//   },
-//   allTimeText: {
-//     color: "#B198BD",
-//   },
-//   eventContainer: {
-//     alignItems: "center",
-//     marginVertical: 20,
-//   },
-//   noEventText: {
-//     fontSize: 16,
-//     color: "#666",
-//   },
-//   eventInstruction: {
-//     fontSize: 14,
-//     color: "#aaa",
-//     textAlign: "center",
-//     marginVertical: 10,
-//   },
-//   createEventButton: {
-//     backgroundColor: "#B198BD",
-//     paddingVertical: 10,
-//     paddingHorizontal: 20,
-//     borderRadius: 8,
-//     marginVertical: 10,
-//   },
-//   createEventText: {
-//     color: "#fff",
-//     fontSize: 16,
-//   },
-//   orText: {
-//     fontSize: 14,
-//     color: "#aaa",
-//     marginVertical: 10,
-//   },
-//   qrButton: {
-//     borderColor: "#B198BD",
-//     borderWidth: 1,
-//     paddingVertical: 10,
-//     paddingHorizontal: 20,
-//     borderRadius: 8,
-//   },
-//   qrText: {
-//     color: "#B198BD",
-//     fontSize: 16,
-//   },
-//   navBar: {
-//     flexDirection: "row",
-//     justifyContent: "space-around",
-//     alignItems: "center",
-//     height: 60,
-//     backgroundColor: "#f7f7f7",
-//     borderTopWidth: 1,
-//     borderColor: "#ddd",
-//   },
-//   navLabel: {
-//     fontSize: 12,
-//     color: "#888",
-//   },
-//   addButton: {
-//     backgroundColor: "#B198BD",
-//     padding: 5,
-//     borderRadius: 30,
-//     marginVertical: 10,
-//   },
-// });
 
 export default HomeScreen;
+
+

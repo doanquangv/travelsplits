@@ -66,7 +66,7 @@ const ButtonImagePicker = (props: Props) => {
         }
 
         const cameraResult = await ImagePicker.launchCameraAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+          mediaTypes: ['images'], // Sử dụng MediaType mới
           allowsEditing: true,
           aspect: [4, 3],
           quality: 1,
@@ -80,7 +80,7 @@ const ButtonImagePicker = (props: Props) => {
 
       case 'library':
         const libraryResult = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+          mediaTypes: ['images'], // Sử dụng MediaType mới
           allowsEditing: true,
           aspect: [4, 3],
           quality: 1,

@@ -62,8 +62,8 @@ const TabNavigation = () => {
 
             case "Add":
               icon = (
-                <CircleComponent size={50} styles={{marginTop: -45}}>
-                  <AddSquare size={25} color={appColors.white} variant="Bold" />
+                <CircleComponent size={55} styles={{marginTop: -25}}>
+                  <AddSquare size={30} color={appColors.white} variant="Bold" />
                 </CircleComponent>
                 
               );

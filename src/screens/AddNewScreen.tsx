@@ -12,7 +12,7 @@ import {
   TimePicker,
 } from "../components";
 import TextComponent from "../components/TextComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { authReducer, authSelector } from "../redux/reducers/authReducer";
 import ChoiceLocation from "../components/ChoiceLocation";
 import userAPI from "../apis/userApi";
@@ -21,6 +21,7 @@ import { SelectModel } from "../models/SelectModel";
 import { Validate } from "../../utils/validate";
 import { eventModel } from "../models/eventModel";
 import eventAPI from "../apis/eventApi";
+import { addEvent } from "../redux/reducers/eventReducer";
 
 const initValues = {
   title: "",
@@ -41,6 +42,7 @@ const initValues = {
 
 const AddNewScreen = ({navigation}:any) => {
   const auth = useSelector(authSelector);
+  const dispatch = useDispatch();
 
   const [eventData, setEventData] = useState<any>({
     ...initValues,
@@ -70,8 +72,8 @@ const AddNewScreen = ({navigation}:any) => {
       name: "upload.jpg",
     } as any;
     data.append("file", file);
-    data.append("upload_preset", "j4uytbqh"); // Thay YOUR_UPLOAD_PRESET bằng preset của bạn
-    data.append("cloud_name", "dprqrzuba"); // Thay YOUR_CLOUD_NAME bằng tên cloud của bạn
+    data.append("upload_preset", "j4uytbqh"); // 
+    data.append("cloud_name", "dprqrzuba"); 
 
     try {
       const res = await fetch("https://api.cloudinary.com/v1_1/dprqrzuba/image/upload", {
@@ -108,6 +110,7 @@ const AddNewScreen = ({navigation}:any) => {
           })
         )
         setUserSelects(items)
+        
       }
     } catch (error) {
       console.log("errorrrr", error);
@@ -135,6 +138,7 @@ const handleLocation = (val: any) => {
   }
   const handleAddEvent = async () => {
       handlePushEvent(eventData);
+      console.log(eventData)
     };
   const handlePushEvent = async (event: eventModel) => {
     console.log(event);
@@ -142,7 +146,12 @@ const handleLocation = (val: any) => {
     const api = '/add-new';
       try {
         const res = await eventAPI.HandleEvent(api, event, 'post');
+        
         navigation.navigate('Home')
+
+        dispatch(addEvent(res.data));
+
+        setEventData({ ...initValues, hostId: auth.id, }); 
         
       } catch (error) {
         console.log("errorrrr", error);
@@ -235,3 +244,5 @@ const handleLocation = (val: any) => {
 };
 
 export default AddNewScreen;
+
+

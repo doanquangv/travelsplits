@@ -1,38 +1,38 @@
 {
   "expo": {
     "packagerOpts": {
-      "sourceExts": ["js", "jsx", "svgx"],
+      "sourceExts": [
+        "js",
+        "jsx",
+        "svgx"
+      ],
       "transformer": "node_modules/react-native-svg-transformer/index.js"
     },
     "name": "travelsplits",
     "slug": "travelsplits",
     "version": "1.0.0",
     "orientation": "portrait",
-    
     "userInterfaceStyle": "light",
-    "permissions": [
-      "location"
-    ],
     "splash": {
-      
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "bundleIdentifier": "com.travelsplitscompany.travelsplits",
       "supportsTablet": true,
-      "config": {
-        "googleMapsApiKey": "AIzaSyCSIz9HM592pvONJ1i-dQuu0_QQ6sEUkSo"
-      }
+      "config": {}
     },
     "android": {
       "googleServicesFile": "./google-services.json",
-      "package": "com.travelsplitscompany.travelsplits",
-      "googleMapsApiKey": "AIzaSyAOOHpaqJ0ofAOmwjtdvUHkbp4g761c1kM"
-    },
+      "package": "com.travelsplitscompany.travelsplits"
+  },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "newArchEnabled": true,
     "plugins": [
       "expo-font",
       "expo-asset",
@@ -48,7 +48,8 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ]
+      ],
+      "expo-localization"
     ]
   }
 }

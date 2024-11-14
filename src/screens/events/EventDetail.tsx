@@ -30,10 +30,10 @@ const EventDetail = ({ navigation, route }: any) => {
       key: "expenses",
       content: "Chi Phí",
     },
-    {
-      key: "feeds",
-      content: "Bảng tin",
-    },
+    // {
+    //   key: "feeds",
+    //   content: "Bảng tin",
+    // },
     {
       key: "schedule",
       content: "Lịch trình",

@@ -35,4 +35,4 @@ const authSlice = createSlice({
 export const authReducer = authSlice.reducer;
 export const { addAuth , removeAuth} = authSlice.actions;
 
-export const authSelector = (state: any ) => state.authReducer.authData;
+export const authSelector = (state: any ) => state.auth.authData;
