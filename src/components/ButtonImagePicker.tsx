@@ -1,4 +1,4 @@
-import React, { useState, useRef, ReactNode } from 'react';
+import React, { useState, useRef, ReactNode, useCallback } from 'react';
 import { View, Platform } from 'react-native';
 import ButtonComponent from './ButtonComponent';
 import { Modalize } from 'react-native-modalize';
@@ -43,14 +43,14 @@ const ButtonImagePicker = (props: Props) => {
     
   ];
 
-  const renderItem = (item: { icon: ReactNode; key: string; title: string }) => (
+  const renderItem = useCallback((item: { icon: ReactNode; key: string; title: string }) => (
     <RowComponent key={item.key} styles={{ marginBottom: 20 }} onPress={() => handleChoiceImage(item.key)}>
       {item.icon}
       <SpaceComponent width={12} />
       <TextComponent text={item.title} flex={1} font={fontFamily.medium} />
     </RowComponent>
 
-  );
+  ), []);
 
   const handleChoiceImage = async (key: string) => {
     modalizeRef.current?.close(); // Đóng modal sau khi chọn
@@ -72,10 +72,11 @@ const ButtonImagePicker = (props: Props) => {
           quality: 1,
         });
 
-        if (!cameraResult.canceled) {
-          setSelectedImageUri(cameraResult.assets[0].uri); // Lưu URI vào state
-          onSelect({ type: 'file', value: cameraResult.assets[0] }); 
+        if (!cameraResult.canceled && cameraResult.assets && cameraResult.assets.length > 0) {
+          setSelectedImageUri(cameraResult.assets[0].uri);
+          onSelect({ type: 'file', value: cameraResult.assets[0] });
         }
+        
         break;
 
       case 'library':

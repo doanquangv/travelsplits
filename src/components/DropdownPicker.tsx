@@ -1,5 +1,5 @@
 import { View, Text, Button, StyleSheet } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SelectModel } from "../models/SelectModel";
 import TextComponent from "./TextComponent";
 import RowComponent from "./RowComponent";
@@ -84,7 +84,7 @@ const DropdownPicker = (props: Props) => {
     );
   };
 
-  const renderSelectItem = (item: SelectModel) => {
+  const renderSelectItem = useCallback ((item: SelectModel) => {
     return (
       <RowComponent
         onPress={
@@ -118,7 +118,7 @@ const DropdownPicker = (props: Props) => {
         )}
       </RowComponent>
     );
-  };
+  },[multiple, onSelect, selectedItems]);
 
   return (
     <View style={{ marginBottom: 8 }}>

@@ -1,6 +1,6 @@
-// Trong eventReducer.js (ví dụ)
 import { createSlice } from "@reduxjs/toolkit";
 import { eventModel } from "../../models/eventModel";
+import { RootState } from "../store";
 
 
 interface EventState {
@@ -26,7 +26,7 @@ const eventSlice = createSlice({
       } else {
         state.events = action.payload;
       }
-      console.log("State events in Redux store:", state.events);
+      // console.log("State events in Redux store:", state.events);
     },
     
     // ... các action khác cho sự kiện (nếu cần)
@@ -37,4 +37,4 @@ const eventSlice = createSlice({
 export const eventReducer = eventSlice.reducer;
 export const { addEvent, setEvents  } = eventSlice.actions;
 
-export const eventSelector = (state: any) => state.event.events;
+export const eventSelector = (state: RootState) => state.event.events;

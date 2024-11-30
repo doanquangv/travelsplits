@@ -50,18 +50,20 @@ const TimePicker = (props: Props) => {
           styles={{ textAlign: "center" }}
         />
         {
-          type ==='time' ? <Clock size={22} color={appColors.gray} /> : <Calendar size={22} color={appColors.gray} />
+          type ==='time' ? <Clock size={22} color={appColors.gray} /> : <Calendar size={22} color={appColors.primary} />
         }
         
-      </RowComponent>
-      {isShowDatePicker && (
+      </RowComponent >
+      {isShowDatePicker && Platform.OS === 'ios' && (
         <DateTimePicker
           mode={type}
           value={date}
           is24Hour={true}
           display="spinner" // Hoặc 'default', 'calendar'
+          style={{backgroundColor:appColors.white, borderRadius: 10}}
           onChange={onChange}
         />
+        
       )}
     </View>
   );

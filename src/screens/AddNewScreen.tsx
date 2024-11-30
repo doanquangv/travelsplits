@@ -35,9 +35,10 @@ const initValues = {
   imageUrl: "",
   users: [],
   hostId: "",
-  startAt: Date.now(),
-  endAt: Date.now(),
-  date: Date.now(),
+  startDate : Date.now(),
+  endDate: Date.now(),
+  
+  status: "đang hoạt động",
 };
 
 const AddNewScreen = ({navigation}:any) => {
@@ -98,7 +99,7 @@ const AddNewScreen = ({navigation}:any) => {
 
     try {
       const res: any = await userAPI.HandleUser(api);
-
+      
       if(res && res.data) {
         const items: SelectModel[]= []
 
@@ -137,25 +138,32 @@ const handleLocation = (val: any) => {
     setEventData(items);
   }
   const handleAddEvent = async () => {
-      handlePushEvent(eventData);
-      console.log(eventData)
+    const eventPayload = {
+        ...eventData,
+        startDate : eventData.startDate.getTime(),
+        endDate: eventData.endDate.getTime(),
+        // date: eventData.date.getTime(),
     };
+    handlePushEvent(eventPayload);
+    console.log(eventPayload)
+};
+
   const handlePushEvent = async (event: eventModel) => {
-    console.log(event);
+    console.log("Sending event data:", event);
     
     const api = '/add-new';
-      try {
+    try {
         const res = await eventAPI.HandleEvent(api, event, 'post');
-        
-        navigation.navigate('Home')
-
-        dispatch(addEvent(res.data));
-
-        setEventData({ ...initValues, hostId: auth.id, }); 
-        
-      } catch (error) {
-        console.log("errorrrr", error);
-      }
+        console.log("Full Response:", res);
+        if (res && res.data) {
+            console.log("Response Data:", res.data);
+            navigation.navigate('Home');
+            dispatch(addEvent(res.data));
+            setEventData({ ...initValues, hostId: auth.id });
+        }
+    } catch (error) {
+        console.log("Error during adding event:", error);
+    }
   }
 
   return (
@@ -171,36 +179,36 @@ const handleLocation = (val: any) => {
           value={eventData.title}
           onChange={(val) => handleChangeValue("title", val)}
         />
-        <InputComponent
+        {/* <InputComponent
           placeholder="Mô tả"
           // multiline
           allowClear
           numberOfLines={3}
           value={eventData.descreption}
           onChange={(val) => handleChangeValue("descreption", val)}
-        />
-        <RowComponent>
+        /> */}
+        
           <TimePicker
-            label="Giờ bắt đầu"
-            type="time"
-            onSelect={(val) => handleChangeValue("startAt", val)}
-            selected={eventData.startAt}
+            label="Ngày bắt đầu"
+            type="date"
+            onSelect={(val) => handleChangeValue("startDate", val)}
+            selected={eventData.startDate }
           />
           <SpaceComponent width={20} />
           <TimePicker
-            label="Giờ kết thúc"
-            type="time"
-            onSelect={(val) => handleChangeValue("endAt", val)}
-            selected={eventData.endAt}
+            label="ngày kết thúc"
+            type="date"
+            onSelect={(val) => handleChangeValue("endDate", val)}
+            selected={eventData.endDate}
           />
-        </RowComponent>
+       
 
-        <TimePicker
+        {/* <TimePicker
           label="Ngày Tổ chức"
           type="date"
           onSelect={(val) => handleChangeValue("date", val)}
           selected={eventData.date}
-        />
+        /> */}
 
         <DropdownPicker
           label="Thành viên tham gia"
@@ -209,13 +217,13 @@ const handleLocation = (val: any) => {
           selected={eventData.users}
           multiple
         />
-        <InputComponent
+        {/* <InputComponent
           placeholder="Tiêu đề địa chỉ"
           allowClear
           value={eventData.locationTitle}
           onChange={val => handleChangeValue('locationTitle', val)}
           
-        />
+        /> */}
         {/* <InputComponent
           placeholder="Số tiền"
           allowClear

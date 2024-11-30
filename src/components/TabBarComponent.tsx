@@ -20,7 +20,7 @@ const TabBarComponent = (props: Props) => {
     }}>
         <TextComponent text={title} title flex={1}  />
         <RowComponent onPress={onPress}>
-            <TextComponent text='See All ' color='#747688' size={13} />
+            <TextComponent text='Tất cả' color='#747688' size={13} />
             <ArrowRight2 color={appColors.primary} size={16} />
         </RowComponent>
     </RowComponent>

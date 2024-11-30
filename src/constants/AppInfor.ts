@@ -5,7 +5,7 @@ export const AppInfo = {
         WIDTH:Dimensions.get('window').width,
         HEIGHT:Dimensions.get('window').height,
     },
-    BASE_URL:'http://192.168.5.102:3001',
+    BASE_URL:'http://192.168.5.102:9445',
     // ip home: 192.168.5.102
     // ip iphone: 172.20.10.2
     //ip quan: 172.16.3.122

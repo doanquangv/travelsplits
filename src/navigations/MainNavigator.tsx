@@ -7,6 +7,7 @@ import TabBottom from "./TabNavigation";
 import { EventDetail, HomeScreen } from "../screens";
 import TabNavigation from "./TabNavigation";
 
+
 const MainNavigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ const MainNavigator = () => {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="main" component={TabNavigation} />
           <Stack.Screen name="EventDetail" component={EventDetail} />
+          
         </Stack.Navigator>
       
   );

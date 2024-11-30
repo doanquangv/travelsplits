@@ -110,11 +110,11 @@ const SignUpScreen = ({navigation}:any) => {
         
 
         <SectionComponent>
-          <TextComponent size={24} title text="Sign up" />
+          <TextComponent size={24} title text="Đăng ký" />
           <SpaceComponent width={0} height={21} />
           <InputComponent
             value={values.username}
-            placeholder="Username"
+            placeholder="Tên Người dùng"
             onChange={(val) => handleChangeValue('username',val)}
             // isPassword
             allowClear
@@ -133,7 +133,7 @@ const SignUpScreen = ({navigation}:any) => {
           />
           <InputComponent
             value={values.password}
-            placeholder="Password"
+            placeholder="Mật khẩu"
             onChange={(val) => handleChangeValue('password',val)}
             isPassword
             allowClear
@@ -142,7 +142,7 @@ const SignUpScreen = ({navigation}:any) => {
           />
           <InputComponent
             value={values.confirmPassword}
-            placeholder="Confirm Password"
+            placeholder="Nhập lại mật khẩu"
             onChange={(val) => handleChangeValue('confirmPassword',val)}
             isPassword
             allowClear
@@ -165,13 +165,13 @@ const SignUpScreen = ({navigation}:any) => {
         <SpaceComponent height={16} width={0} />
 
         <SectionComponent  >
-          <ButtonComponent  onPress={handleRegister} text={"SIGN UP"} type="primary" disable={isDisable} />
+          <ButtonComponent  onPress={handleRegister} text={"Đăng Ký"} type="primary" disable={isDisable} />
         </SectionComponent>
-        <SocialLogin />
+        {/* <SocialLogin /> */}
         <SectionComponent>
           <RowComponent justify="center">
-            <TextComponent text="Don't have an account"/>
-            <ButtonComponent  type="link" text="Sign in" onPress={() => navigation.navigate('LoginScreen')}/>
+            <TextComponent text="Bạn đã có tài khoản? "/>
+            <ButtonComponent  type="link" text="Đăng nhập" onPress={() => navigation.navigate('LoginScreen')}/>
           </RowComponent>
         </SectionComponent>
         

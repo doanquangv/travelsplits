@@ -19,7 +19,7 @@ export class Validate {
         
         const mess: string[] = [];
         Object.keys(data).forEach(key => {
-          if (key !== 'description' && key !== 'users') {
+          if (key !== 'description' && key !== 'users' && key !== 'locationTitle' ) {
             !data[`${key}`] && mess.push(`${key} is required!!!`);
           }
         });

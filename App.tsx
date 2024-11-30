@@ -39,11 +39,11 @@ const App = () => {
         <Provider store={store}>
           <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
 
-        <Host>
-          <NavigationContainer>
-             <AppRouters /> 
-          </NavigationContainer>
-        </Host>
+          <Host>
+            <NavigationContainer>
+              <AppRouters /> 
+            </NavigationContainer>
+          </Host>
         </Provider>
       </GestureHandlerRootView>
     </>

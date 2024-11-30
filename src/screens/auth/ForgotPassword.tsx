@@ -45,8 +45,8 @@ const ForgotPassword = () => {
   return (
     <ContainerComponent back isImageBackground isScoll>
       <SectionComponent>
-        <TextComponent text="Resset Password" title />
-        <TextComponent text="Enter your email address to reset your password" />
+        <TextComponent text="Đặt lại mật khẩu" title />
+        <TextComponent text="Vui lòng nhâp email của bạn để đặt lại mật khẩu" />
 
         <SpaceComponent height={26} width={0} />
         <InputComponent
@@ -61,7 +61,7 @@ const ForgotPassword = () => {
         <ButtonComponent
           onPress={handleForgotPassword}
           disable={isDisable}
-          text="Send"
+          text="Gửi"
           type="primary"
           icon={<ArrowRight size={20} color={appColors.white} />}
           iconFlex="right"

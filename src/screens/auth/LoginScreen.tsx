@@ -52,6 +52,7 @@ const LoginScreen = ({navigation} : any) => {
         console.log(error)
 
         setIsLoading(false)
+        
       }
     }else {
       Alert.alert('Email is not valid')
@@ -64,7 +65,7 @@ const LoginScreen = ({navigation} : any) => {
       </SectionComponent>
 
       <SectionComponent>
-        <TextComponent size={24} title text="Sign in" />
+        <TextComponent size={24} title text="Đăng nhập" />
         <SpaceComponent width={0} height={21} />
         <InputComponent
         value={email}
@@ -77,7 +78,7 @@ const LoginScreen = ({navigation} : any) => {
       />
       <InputComponent
         value={password}
-        placeholder="Password"
+        placeholder="mật khẩu"
         onChange={(val) => setPassword(val)}
         isPassword
         allowClear
@@ -89,10 +90,10 @@ const LoginScreen = ({navigation} : any) => {
         <RowComponent onPress={()=> setIsRemember(!isRemember)}>
           <Switch trackColor={{true: appColors.primary}}  value={isRemember} onChange={() => setIsRemember(!isRemember)}/>
           <SpaceComponent width={5} height={0} />
-          <TextComponent  text="Remenber me"/>
+          <TextComponent  text="Ghi nhớ thông tin"/>
 
         </RowComponent>
-        <ButtonComponent text={"Forgot Password?"}  onPress={() => navigation.navigate('ForgotPassword')} type="text"/>
+        <ButtonComponent color={appColors.primary} text={"Quên mật khẩu?"}  onPress={() => navigation.navigate('ForgotPassword')} type="text"/>
         
       </RowComponent>
 
@@ -101,13 +102,13 @@ const LoginScreen = ({navigation} : any) => {
       <SpaceComponent height={16} width={0} />
 
       <SectionComponent >
-        <ButtonComponent disable={isLoading||isDisable} onPress={handleLogin} text={"Sign in"} type="primary" />
+        <ButtonComponent disable={isLoading||isDisable} onPress={handleLogin} text={"Đăng nhập"} type="primary" />
       </SectionComponent>
-      <SocialLogin />
+      {/* <SocialLogin /> */}
       <SectionComponent>
         <RowComponent justify="center">
           <TextComponent text="Don't have an account?"/>
-          <ButtonComponent type="link" text="Sign up" onPress={() => navigation.navigate(SignUpScreen)}/>
+          <ButtonComponent type="link" text=" Đăng Ký" onPress={() => navigation.navigate('SignUpScreen')}/>
         </RowComponent>
       </SectionComponent>
 

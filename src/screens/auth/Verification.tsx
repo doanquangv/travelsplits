@@ -84,7 +84,7 @@ const Verification = ({ navigation, route }: any) => {
   const handleVerification = async () => {
     if (limit > 0) {
       if (parseInt(newCode) !== parseInt(currentCode)) {
-        setErrorMessages("Code is not valid");
+        setErrorMessages("code không đúng ");
       } else {
         setErrorMessages('')
 
@@ -117,10 +117,10 @@ const Verification = ({ navigation, route }: any) => {
   return (
     <ContainerComponent back isImageBackground isScoll>
       <SectionComponent>
-        <TextComponent text="Verification" title />
+        <TextComponent text="Xác thực người dùng" title />
         <SpaceComponent height={12} />
         <TextComponent
-          text={`We've send you the vertification code on ${email.replace(
+          text={`Đã gửi một đoạn mã xác thực vào ${email.replace(
             /.{1,5}/,
             (m: any) => "*".repeat(m.length)
           )}`}
@@ -191,7 +191,7 @@ const Verification = ({ navigation, route }: any) => {
         <ButtonComponent
           disable={newCode.length !== 4}
           onPress={handleVerification}
-          text="Continue"
+          text="Tiếp tục"
           type="primary"
         />
       </SectionComponent>
@@ -199,7 +199,7 @@ const Verification = ({ navigation, route }: any) => {
       <SectionComponent>
         {limit > 0 ? (
           <RowComponent justify="center">
-            <TextComponent text="Re-send code in " flex={0} />
+            <TextComponent text="Gửi lại trong " flex={0} />
             <TextComponent
               text={`${(limit - (limit %60)) /60}:${limit - (limit - (limit %60))}`}
               flex={0}
@@ -210,7 +210,7 @@ const Verification = ({ navigation, route }: any) => {
           <RowComponent>
             <ButtonComponent
               type="link"
-              text={"Resend email verification"}
+              text={"Gửi lại mã xác thực"}
               onPress={handleResendVerification}
             />
           </RowComponent>

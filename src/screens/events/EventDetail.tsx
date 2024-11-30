@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { ArrowLeft2, Card, MoneyRecive, MoneySend } from "iconsax-react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ImageBackground,
   ScrollView,
@@ -8,6 +8,7 @@ import {
   View
 } from "react-native";
 import {
+  ButtonComponent,
   CircleComponent,
   RowComponent,
   SectionComponent,
@@ -21,32 +22,32 @@ import { eventModel } from "../../models/eventModel";
 import { globalStyles } from "../../styles/globalStyles";
 import CardComponent from "../../components/CardComponent";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { RouteProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import ExpensesTab from "./EventDetail/ExpensesTab";
+import ScheduleTab from "./EventDetail/ScheduleTab";
+import MembersTab from "./EventDetail/MembersTab";
+import EventDetailTabs from "../../navigations/event/TabEventNavigation";
+import TabEventNavigation from "../../navigations/event/TabEventNavigation";
+import { Button } from "react-native-paper";
+
+
 
 const EventDetail = ({ navigation, route }: any) => {
-  const {item}: {item: eventModel} = route.params;
-  const [tabSelected, setTabSelected] = useState("expenses");
-  const tabs = [
+  const { item } = route.params;
+  const imageUrl = item.imageUrl; // Lấy URL hình ảnh từ sự kiện
+
+  const handleActionPress=()=>{
+    if(item.status=="active")
     {
-      key: "expenses",
-      content: "Chi Phí",
-    },
-    // {
-    //   key: "feeds",
-    //   content: "Bảng tin",
-    // },
-    {
-      key: "schedule",
-      content: "Lịch trình",
-    },
-    {
-      key: "members",
-      content: "Thành viên",
-    },
-  ];
+      item.status="inactive";
+    }
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={require("../../assets/images/travel.png")}
+       <ImageBackground
+        source={imageUrl ? { uri: imageUrl } : require("../../assets/images/travel.png")}
         style={{ height: 244 }}
         imageStyle={{
           resizeMode: "cover",
@@ -68,47 +69,15 @@ const EventDetail = ({ navigation, route }: any) => {
                 size={22}
                 color={appColors.white}
               />
+              
             </RowComponent>
           </View>
         </LinearGradient>
       </ImageBackground>
      
-        <RowComponent styles={{backgroundColor:appColors.white}}>
-          {tabs.map((item) => (
-            <TouchableOpacity
-              onPress={() => setTabSelected(item.key)}
-              style={[
-                globalStyles.center,
-                {
-                  flex: 1,
-                  borderBottomWidth: 3,
-                  borderBottomColor:
-                    item.key === tabSelected
-                      ? appColors.primary
-                      : appColors.white,
-                    paddingVertical: 25,
-                },
-              ]}
-              key={item.key}
-            >
-              <TextComponent
-                
-                text={item.content}
-                font={
-                  item.key === tabSelected
-                    ? fontFamily.medium
-                    : fontFamily.regular
-                }
-                size={16}
-                color={
-                  item.key === tabSelected ? appColors.primary : appColors.text
-                }
-              />
-            </TouchableOpacity>
-          ))}
-        </RowComponent>
-      <ScrollView showsVerticalScrollIndicator={false}  style={{flex :1, padding:20}}>
-        <SectionComponent  styles={[globalStyles.shadow,{backgroundColor:appColors.white, borderRadius:25}]}>
+       
+      
+        {/* <SectionComponent  styles={[globalStyles.shadow,{backgroundColor:appColors.white, borderRadius:25}]}>
           <View style={[globalStyles.center,{paddingTop:10}]}>
             <TextComponent text="Số dư nợ: " size={18} />
             <TextComponent text="0đ" font={fontFamily.bold} size={24} />
@@ -182,9 +151,11 @@ const EventDetail = ({ navigation, route }: any) => {
         </View> 
           
         </SectionComponent>
-
+         */}
+      
+        <TabEventNavigation eventId={item._id}/>
         
-      </ScrollView>
+        
     </View>
   );
 };
