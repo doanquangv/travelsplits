@@ -28,24 +28,35 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
 }) => {
   const [email, setEmail] = useState<string>("");
 
+  // console.log("eventId từ MembersTab:", eventId);
+
   const handleSave = async () => {
     if (!email) {
       Alert.alert("Lỗi", "Vui lòng nhập email của thành viên.");
       return;
     }
-
     try {
+      console.log("Data being sent to API:", { email });
+
       const response = await memberAPI.addMemberToEvent(eventId, { email });
-      if (response && response.data) {
-        Alert.alert("Thành công", "Thành viên đã được thêm.");
-        onSave(email);
-        setEmail(""); // Reset dữ liệu
-        onClose(); // Đóng modal
+      console.log("Phản hồi từ API:", response);
+
+      Alert.alert("Thành công", "Thành viên đã được thêm.");
+      onSave(email);
+      console.log("onSave được gọi với email:", email);
+      setEmail(""); // Reset dữ liệu
+      onClose(); // Đóng modal
+      
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        console.error("Lỗi từ API:", error.response.data);
+        Alert.alert("Lỗi", error.response.data.message || "Không thể thêm thành viên. Vui lòng thử lại.");
+      } else {
+        console.error("Lỗi khi thêm thành viên:", error);
+        Alert.alert("Lỗi", "Không thể thêm thành viên. Vui lòng thử lại.");
       }
-    } catch (error) {
-      console.error("Lỗi khi thêm thành viên:", error);
-      Alert.alert("Lỗi", "Không thể thêm thành viên. Vui lòng thử lại.");
     }
+    
   };
 
   return (
@@ -57,7 +68,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <TextComponent text="Thêm Thành Viên" styles={[styles.modalTitle]} />
+          <TextComponent text="Thêm Thành Viên" title />
           <InputComponent
             placeholder="Email thành viên"
             value={email}
@@ -69,10 +80,14 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
               styles={[styles.button]}
               type="primary"
               onPress={handleSave}
+              
+
             />
             <ButtonComponent
               text="Hủy"
-              styles={[styles.button, { backgroundColor: appColors.danger }]}
+              color={appColors.danger}
+              styles={[]}
+              // styles={[styles.button, { backgroundColor: appColors.danger }]}
               onPress={onClose}
               type="primary"
             />

@@ -35,6 +35,7 @@ const initValues = {
   imageUrl: "",
   users: [],
   hostId: "",
+  
   startDate : Date.now(),
   endDate: Date.now(),
   
@@ -210,13 +211,13 @@ const handleLocation = (val: any) => {
           selected={eventData.date}
         /> */}
 
-        <DropdownPicker
+        {/* <DropdownPicker
           label="Thành viên tham gia"
           values={userSelects}
           onSelect={(val: string | string[]) => handleChangeValue("users", val as string[])}
           selected={eventData.users}
           multiple
-        />
+        /> */}
         {/* <InputComponent
           placeholder="Tiêu đề địa chỉ"
           allowClear

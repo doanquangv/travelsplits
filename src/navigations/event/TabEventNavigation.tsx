@@ -5,12 +5,12 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 
 import { appColors } from "../../constants/appColors";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import Icon từ react-native-vector-icons
-import ExpensesTab from "../../screens/events/EventDetail/ExpensesTab";
 
 import MembersTab from "../../screens/events/EventDetail/MembersTab";
 import { Text, View } from "react-native";
 import { fontFamily } from "../../constants/fontFamilies";
 import ScheduleNavigator from "./ScheduleNavigator";
+import ExpensesTab from "../../screens/events/EventDetail/expenseScreen/ExpensesTab";
 
 // Định nghĩa kiểu cho Tab Navigator
 export type EventDetailTabParamList = {
@@ -74,8 +74,9 @@ const TabEventNavigation: React.FC<TabEventNavigationProps> = ({ eventId }) => {
         }}
       />
       <Tab.Screen
-        name="Members"
-        component={MembersTab}
+         name="Members"
+          children={(props) => <MembersTab {...props} eventId={eventId} />}
+        
         options={{
           tabBarLabel: ({ color }) => (
             <View style={{ alignItems: "center" }}>

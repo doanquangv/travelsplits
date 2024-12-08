@@ -21,17 +21,17 @@ class MemberApi {
 
     // Hàm cụ thể để thêm thành viên vào sự kiện
     addMemberToEvent = async (eventId: string, memberData: any) => {
-        return this.handleMember(`/${eventId}`, memberData, 'post');
+        return this.handleMember(`/${eventId}/addMembers`, memberData, 'post');
     }
 
     // Hàm cụ thể để lấy danh sách thành viên của sự kiện
     getEventMembers = async (eventId: string) => {
-        return this.handleMember(`/${eventId}`, undefined, 'get');
+        return this.handleMember(`/${eventId}/members`, undefined, 'get');
     }
 
     // Hàm cụ thể để xóa thành viên khỏi sự kiện
     removeMemberFromEvent = async (eventId: string, memberId: string) => {
-        return this.handleMember(`/${eventId}/${memberId}`, undefined, 'delete');
+        return this.handleMember(`/${eventId}/members/${memberId}`, undefined, 'delete');
     }
 }
 

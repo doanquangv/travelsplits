@@ -27,6 +27,7 @@ const AddActualExpense: React.FC<AddActualExpenseProps> = ({
   visible,
   onClose,
   onSave,
+  eventId,
 }) => {
   const [expense, setExpense] = useState({
     name: "",

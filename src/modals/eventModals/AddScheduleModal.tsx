@@ -102,7 +102,6 @@ const AddNewScheduleModal = forwardRef<Modalize, AddNewScheduleModalProps>(
         };
 
         await scheduleAPI.addSchedule(eventId, newSchedule);
-        fetchSchedules(); // Làm mới danh sách lịch trình
         Alert.alert("Thành công", "Thêm lịch trình mới thành công.");
 
         fetchSchedules(); 
@@ -141,8 +140,8 @@ const AddNewScheduleModal = forwardRef<Modalize, AddNewScheduleModalProps>(
     };
 
     return (
-      <Modalize ref={ref} modalHeight={600}>
-        <ContainerComponent>
+      <Modalize ref={ref} modalHeight={550} scrollViewProps={{showsHorizontalScrollIndicator:false}}>
+        <View style={{paddingHorizontal:20, paddingVertical:10}}>
           <TextComponent text="Thêm Lịch Trình Mới" title />
           <SpaceComponent height={20} />
 
@@ -208,7 +207,7 @@ const AddNewScheduleModal = forwardRef<Modalize, AddNewScheduleModalProps>(
           <SpaceComponent height={20} />
 
           <ButtonComponent text="Thêm Lịch Trình" onPress={handleAddSchedule} type="primary" />
-        </ContainerComponent>
+        </View>
       </Modalize>
     );
   }

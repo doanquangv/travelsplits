@@ -31,15 +31,23 @@ class ScheduleApi {
     getSchedules = (eventId: string) => {
         return this.HandleSchedule(`/${eventId}`, null, 'get');
     }
+    // Lấy chi tiết một lịch trình
+    // client/travelsplits/src/api/ScheduleApi.ts
 
-    // Cập nhật lịch trình
-    updateSchedule = (scheduleId: string, updatedData: any) => {
-        return this.HandleSchedule(`/${scheduleId}`, updatedData, 'put');
+    getSchedule = (eventId: string, scheduleId: string) => {
+        return this.HandleSchedule(`/detail/${eventId}/${scheduleId}`, null, 'get');
     }
 
+
+
+    // Cập nhật lịch trình
+    updateSchedule = (eventId: string,scheduleId: string, updatedData: any) => {
+            return this.HandleSchedule(`/${eventId}/schedule/${scheduleId}`, updatedData, 'put');
+        }
+
     // Xóa lịch trình
-    deleteSchedule = (scheduleId: string) => {
-        return this.HandleSchedule(`/${scheduleId}`, null, 'delete');
+    deleteSchedule = (eventId: string, scheduleId: string) => {
+        return this.HandleSchedule(`/${eventId}/schedule/${scheduleId}`, null, 'delete');
     }
 }
 

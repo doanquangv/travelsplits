@@ -1,77 +1,100 @@
-
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { appColors } from "../../../constants/appColors";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import { appColors } from "../../../../constants/appColors";
 import {
   CircleComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-} from "../../../components";
-import { globalStyles } from "../../../styles/globalStyles";
-import TextComponent from "../../../components/TextComponent";
-import CardComponent from "../../../components/CardComponent";
-import { fontFamily } from "../../../constants/fontFamilies";
+} from "../../../../components";
+import { globalStyles } from "../../../../styles/globalStyles";
+import TextComponent from "../../../../components/TextComponent";
+import CardComponent from "../../../../components/CardComponent";
+import { fontFamily } from "../../../../constants/fontFamilies";
 import { MoneyRecive, MoneySend } from "iconsax-react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FAB } from "react-native-paper";
-import AddBudgetModal from "../../../modals/eventModals/AddBudgetModal";
-import expenseAPI from "../../../apis/expenseApi";
-import AddActualExpense from "../../../modals/eventModals/AddActualExpense";
+import AddBudgetModal from "../../../../modals/eventModals/AddBudgetModal";
+import expenseAPI from "../../../../apis/expenseApi";
+import AddActualExpense from "../../../../modals/eventModals/AddActualExpense";
+import memberAPI from "../../../../apis/memberApi";
 
 interface ExpensesTabProps {
   eventId: string;
 }
 
 const formatCurrency = (value: number): string => {
-  return value.toLocaleString("vi-VN", { style: "currency", currency: "VND" }).replace("₫", "đ");
+  return value
+    .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+    .replace("₫", "đ");
 };
 
 const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
+  const [members, setMembers] = useState<any[]>([]);
+
   const [isFabOpen, setIsFabOpen] = useState(false); // Trạng thái mở/đóng FAB
   const [showBudgetModal, setShowBudgetModal] = useState(false); // Trạng thái modal
   const [showExpenseModal, setShowExpenseModal] = useState(false); // Trạng thái modal chi tiêu
-  
-
 
   const [totalBudget, setTotalBudget] = useState<any>(null); // Chỉ lưu thông tin ngân sách tổng
   const [actualExpenses, setActualExpenses] = useState<any[]>([]); // Chỉ lưu danh sách chi tiêu
-  
+
   const [loading, setLoading] = useState(false); // Trạng thái loading
 
-  
   const fetchExpenses = async () => {
     setLoading(true);
     try {
       const res = await expenseAPI.HandleExpense(`/${eventId}`);
-      
+
       // console.log(res.data);
       // Kiểm tra dữ liệu trả về và đảm bảo nó có tồn tại
       if (res && res.data) {
         const { totalBudget, actualExpenses } = res.data;
-        setTotalBudget(totalBudget ? totalBudget :  { amount: 0, title: '', addedBy: '' });
-        setActualExpenses(Array.isArray(actualExpenses) ? actualExpenses : []);      } 
-      else {
-          console.error("Dữ liệu trả về từ server không hợp lệ:", res);
-          setTotalBudget({ amount: 0, title: '', addedBy: '' });
-          setActualExpenses([]);     }
-  
-    }  catch (error) {
+        setTotalBudget(
+          totalBudget ? totalBudget : { amount: 0, title: "", addedBy: "" }
+        );
+        setActualExpenses(Array.isArray(actualExpenses) ? actualExpenses : []);
+      } else {
+        console.error("Dữ liệu trả về từ server không hợp lệ:", res);
+        setTotalBudget({ amount: 0, title: "", addedBy: "" });
+        setActualExpenses([]);
+      }
+    } catch (error) {
       console.error("Lỗi khi tải chi phí:", error);
-      setTotalBudget({ amount: 0, title: '', addedBy: '' }); // Đặt tổng ngân sách thành giá trị mặc định
+      setTotalBudget({ amount: 0, title: "", addedBy: "" }); // Đặt tổng ngân sách thành giá trị mặc định
       setActualExpenses([]); // Đặt danh sách chi phí thành rỗng nếu gặp lỗi
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
-  
-  
-    useEffect(() => {
-      fetchExpenses();
-    }, [eventId]);
-    // console.log("totalBudget", totalBudget);
-    // console.log("actualExpenses", actualExpenses);
-    
+
+  useEffect(() => {
+    fetchExpenses();
+  }, [eventId]);
+  // console.log("totalBudget", totalBudget);
+  // console.log("actualExpenses", actualExpenses);
+
+  const fetchMembers = async () => {
+    try {
+      const res = await memberAPI.getEventMembers(eventId);
+      // API này trả về mảng members
+      if (res && Array.isArray(res)) {
+        setMembers(res);
+      } else if (res?.data && Array.isArray(res.data)) {
+        setMembers(res.data);
+      } else {
+        setMembers([]);
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải thành viên:", error);
+      setMembers([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchExpenses();
+    fetchMembers(); // Lấy dữ liệu thành viên
+  }, [eventId]);
 
   const handleActionPress = (action: string) => {
     setIsFabOpen(false); // Đóng FAB sau khi chọn hành động
@@ -87,14 +110,18 @@ const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
     }
   };
 
-  const handleSaveBudget = async (data: { title: string; amount: string; addedBy: string }) => {
+  const handleSaveBudget = async (data: {
+    title: string;
+    amount: string;
+    addedBy: string;
+  }) => {
     try {
       const response = await expenseAPI.HandleExpense(
         `/${eventId}/budget`,
         { ...data, amount: parseFloat(data.amount) },
         "put"
       );
-  
+
       // Cập nhật giao diện
       setTotalBudget(response.data); // Lưu dữ liệu mới
       await fetchExpenses();
@@ -105,50 +132,74 @@ const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
   };
 
   const handleSaveExpense = async (data: {
-  name: string;
-  amount: string;
-  category: string;
-  date: string;
-}) => {
-  try {
-    console.log("Gửi dữ liệu đến server:", {
-      name: data.name,
-      amount: parseFloat(data.amount),
-      category: data.category,
-      date: data.date,
-    });
-    
-    const response = await expenseAPI.HandleExpense(
-      `/${eventId}/expenses`,
-      {
+    name: string;
+    amount: string;
+    category: string;
+    date: string;
+  }) => {
+    try {
+      console.log("Gửi dữ liệu đến server:", {
         name: data.name,
         amount: parseFloat(data.amount),
         category: data.category,
         date: data.date,
-      },
-      "post"
-    );
-    
-    // console.log("Phản hồi từ server:", response);
-    setActualExpenses(response.data.actualExpenses); // Cập nhật danh sách chi phí
-    setShowExpenseModal(false); // Đóng modal
-  } catch (error: any) {
-    console.error("Lỗi khi thêm chi tiêu:", error.message || "Lỗi không xác định");
-    alert(`Lỗi khi thêm chi tiêu: ${error.message || "Lỗi không xác định"}`);
-  }
-};
+      });
 
-  
-const totalPaid = actualExpenses?.reduce(
-  (sum: number, expense: { amount: number }) => sum + expense.amount,
-  0
-);
+      const response = await expenseAPI.HandleExpense(
+        `/${eventId}/expenses`,
+        {
+          name: data.name,
+          amount: parseFloat(data.amount),
+          category: data.category,
+          date: data.date,
+        },
+        "post"
+      );
 
+      if (response.data?.actualExpenses) {
+        setActualExpenses(response.data.actualExpenses); // Cập nhật danh sách chi tiêu
+      } else {
+        console.error(
+          "Dữ liệu trả về từ server không hợp lệ:",
+          response.data.actualExpenses
+        );
+        alert("Lỗi: Không thể cập nhật danh sách chi tiêu.");
+      }
 
-  
+      setShowExpenseModal(false); // Đóng modal
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(
+          "Lỗi khi thêm chi tiêu:",
+          error.message || "Lỗi không xác định"
+        );
+      } else {
+        console.error("Lỗi khi thêm chi tiêu:", "Lỗi không xác định");
+      }
+      if (error instanceof Error) {
+        alert(
+          `Lỗi khi thêm chi tiêu: ${error.message || "Lỗi không xác định"}`
+        );
+      } else {
+        alert("Lỗi khi thêm chi tiêu: Lỗi không xác định");
+      }
+    }
+  };
+
+  const totalPaid = actualExpenses?.reduce(
+    (sum: number, expense: { amount: number }) => sum + expense.amount,
+    0
+  );
+  const numberOfMembers = members.length || 1;
+  const difference = (totalBudget?.amount || 0) - (totalPaid || 0);
+  const memberDebt = difference / numberOfMembers;
+
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 80 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 80 }}
+      >
         <SectionComponent
           styles={[
             globalStyles.shadow,
@@ -161,8 +212,8 @@ const totalPaid = actualExpenses?.reduce(
           ]}
         >
           <View style={[globalStyles.center, { paddingTop: 20 }]}>
-            <TextComponent text="Số dư nợ: " size={18} />
-            <TextComponent text='0 d' font={fontFamily.bold} size={24} />
+            <TextComponent text="Số dư nợ của bạn: " size={18} />
+            <TextComponent text={`${formatCurrency(memberDebt)}`} font={fontFamily.bold} size={24} />
           </View>
           <SpaceComponent height={20} />
           <RowComponent justify="space-around">
@@ -175,7 +226,10 @@ const totalPaid = actualExpenses?.reduce(
               </CardComponent>
               <View style={{ paddingLeft: 10 }}>
                 <TextComponent text="Tổng tiền:" />
-                <TextComponent text={` ${formatCurrency(totalBudget?.amount || 0)}`} font={fontFamily.bold} />
+                <TextComponent
+                  text={` ${formatCurrency(totalBudget?.amount || 0)}`}
+                  font={fontFamily.bold}
+                />
               </View>
             </RowComponent>
 
@@ -197,7 +251,10 @@ const totalPaid = actualExpenses?.reduce(
               </CardComponent>
               <View style={{ paddingLeft: 10 }}>
                 <TextComponent text="Đã trả: " />
-                <TextComponent text={` ${formatCurrency(totalPaid || 0)}`} font={fontFamily.bold} />
+                <TextComponent
+                  text={` ${formatCurrency(totalPaid || 0)}`}
+                  font={fontFamily.bold}
+                />
               </View>
             </RowComponent>
           </RowComponent>
@@ -230,73 +287,33 @@ const totalPaid = actualExpenses?.reduce(
               },
             ]}
           ></View>
+          {/* Danh sách thành viên và số dư nợ */}
           <View>
-            <RowComponent
-              justify="space-between"
-              styles={[{ paddingVertical: 15 }]}
-            >
-              <RowComponent>
-                <CircleComponent>
-                  <View></View>
-                </CircleComponent>
+            {members.map((member) => (
+              <RowComponent
+                justify="space-between"
+                styles={[{ paddingVertical: 15 }]}
+                key={member.userId._id}
+              >
+                <RowComponent>
+                  <CircleComponent>
+                    <View></View>
+                  </CircleComponent>
+                  <TextComponent
+                    text={member.userId.fullname || member.userId.email}
+                    size={16}
+                    font={fontFamily.medium}
+                    styles={{ paddingLeft: 5 }}
+                  />
+                </RowComponent>
                 <TextComponent
-                  text="Đoàn Quang vũ"
+                  text={`${formatCurrency(memberDebt)}`} // Hiển thị số dư nợ
                   size={16}
                   font={fontFamily.medium}
-                  styles={{ paddingLeft: 5 }}
+                  color={appColors.black}
                 />
               </RowComponent>
-              <TextComponent
-                text="0đ"
-                size={16}
-                font={fontFamily.medium}
-                color={appColors.black}
-              />
-            </RowComponent>
-            <RowComponent
-              justify="space-between"
-              styles={[{ paddingVertical: 15 }]}
-            >
-              <RowComponent>
-                <CircleComponent>
-                  <View></View>
-                </CircleComponent>
-                <TextComponent
-                  text="Đoàn Quang B"
-                  size={16}
-                  font={fontFamily.medium}
-                  styles={{ paddingLeft: 5 }}
-                />
-              </RowComponent>
-              <TextComponent
-                text="0đ"
-                size={16}
-                font={fontFamily.medium}
-                color={appColors.black}
-              />
-            </RowComponent>
-            <RowComponent
-              justify="space-between"
-              styles={[{ paddingVertical: 15 }]}
-            >
-              <RowComponent>
-                <CircleComponent>
-                  <View></View>
-                </CircleComponent>
-                <TextComponent
-                  text="Đoàn Quang C"
-                  size={16}
-                  font={fontFamily.medium}
-                  styles={{ paddingLeft: 5 }}
-                />
-              </RowComponent>
-              <TextComponent
-                text="0đ"
-                size={16}
-                font={fontFamily.medium}
-                color={appColors.black}
-              />
-            </RowComponent>
+            ))}
           </View>
         </SectionComponent>
       </ScrollView>
@@ -332,7 +349,6 @@ const totalPaid = actualExpenses?.reduce(
           // Nếu cần, bạn có thể thêm logic ở đây
         }}
         style={styles.fabGroup}
-
       />
       <AddBudgetModal
         visible={showBudgetModal}
@@ -340,13 +356,12 @@ const totalPaid = actualExpenses?.reduce(
         onSave={handleSaveBudget}
         eventId={eventId}
       />
-     <AddActualExpense
+      <AddActualExpense
         visible={showExpenseModal}
         onClose={() => setShowExpenseModal(false)}
         onSave={handleSaveExpense} // Callback xử lý thêm chi tiêu
         eventId={eventId}
       />
-
     </View>
   );
 };

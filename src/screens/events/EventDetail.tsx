@@ -24,7 +24,7 @@ import CardComponent from "../../components/CardComponent";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import ExpensesTab from "./EventDetail/ExpensesTab";
+import ExpensesTab from "./EventDetail/expenseScreen/DebtTab";
 import ScheduleTab from "./EventDetail/ScheduleTab";
 import MembersTab from "./EventDetail/MembersTab";
 import EventDetailTabs from "../../navigations/event/TabEventNavigation";
@@ -77,81 +77,6 @@ const EventDetail = ({ navigation, route }: any) => {
      
        
       
-        {/* <SectionComponent  styles={[globalStyles.shadow,{backgroundColor:appColors.white, borderRadius:25}]}>
-          <View style={[globalStyles.center,{paddingTop:10}]}>
-            <TextComponent text="Số dư nợ: " size={18} />
-            <TextComponent text="0đ" font={fontFamily.bold} size={24} />
-
-          </View>
-          <SpaceComponent height={20} />
-          <RowComponent justify="space-around">
-
-            <RowComponent>
-            <CardComponent styles={[globalStyles.noSpaceCard]} color="#f8a9a9">
-
-              <MoneySend   color={appColors.danger} />
-            </CardComponent>
-              <View style={{paddingLeft:10}}>
-              <TextComponent   text="Đã trả: " />
-              <TextComponent text="0đ" font={fontFamily.bold} />
-              </View>
-            
-            </RowComponent>
-            <View style={{width:1, backgroundColor:appColors.gray,marginHorizontal:10, height:45}}></View>
-            
-            <RowComponent>
-              <CardComponent styles={[globalStyles.noSpaceCard]} color="#bae0bd">
-                <MoneyRecive size={20} color={appColors.green} />
-              </CardComponent>
-              <View style={{paddingLeft:10}}>
-              <TextComponent text="Tổng tiền:" />
-              <TextComponent text="0đ" font={fontFamily.bold} />
-              </View>
-            </RowComponent>
-          </RowComponent>
-        </SectionComponent>
-
-        <SpaceComponent height={30} />
-
-        <SectionComponent styles={[globalStyles.shadow,{backgroundColor:appColors.white, borderRadius:25}]}>
-          <TextComponent  text="Số dư nợ khác" size={18} font={fontFamily.bold} styles={{paddingTop:10}} />
-          <View  style={[{borderBottomWidth: 1, borderBottomColor:appColors.border, paddingTop:15}]}></View>
-        <View>
-          <RowComponent justify="space-between" styles={[{paddingVertical:15}]} >
-            <RowComponent>
-              <CircleComponent>
-                <View></View>
-              </CircleComponent>
-              <TextComponent text="Đoàn Quang vũ" size={16} font={fontFamily.medium} styles={{paddingLeft:5}} />
-            </RowComponent>
-            <TextComponent text="0đ" size={16} font={fontFamily.medium} color={appColors.black} />
-            
-          </RowComponent>
-          <RowComponent justify="space-between" styles={[{paddingVertical:15}]} >
-            <RowComponent>
-              <CircleComponent>
-                <View></View>
-              </CircleComponent>
-              <TextComponent text="Đoàn Quang B" size={16} font={fontFamily.medium} styles={{paddingLeft:5}} />
-            </RowComponent>
-            <TextComponent text="0đ" size={16} font={fontFamily.medium} color={appColors.black} />
-            
-          </RowComponent>
-          <RowComponent justify="space-between" styles={[{paddingVertical:15}]} >
-            <RowComponent>
-              <CircleComponent>
-                <View></View>
-              </CircleComponent>
-              <TextComponent text="Đoàn Quang C" size={16} font={fontFamily.medium} styles={{paddingLeft:5}} />
-            </RowComponent>
-            <TextComponent text="0đ" size={16} font={fontFamily.medium} color={appColors.black} />
-            
-          </RowComponent>
-
-        </View> 
-          
-        </SectionComponent>
-         */}
       
         <TabEventNavigation eventId={item._id}/>
         
@@ -161,3 +86,78 @@ const EventDetail = ({ navigation, route }: any) => {
 };
 
 export default EventDetail;
+{/* <SectionComponent  styles={[globalStyles.shadow,{backgroundColor:appColors.white, borderRadius:25}]}>
+  <View style={[globalStyles.center,{paddingTop:10}]}>
+    <TextComponent text="Số dư nợ: " size={18} />
+    <TextComponent text="0đ" font={fontFamily.bold} size={24} />
+
+  </View>
+  <SpaceComponent height={20} />
+  <RowComponent justify="space-around">
+
+    <RowComponent>
+    <CardComponent styles={[globalStyles.noSpaceCard]} color="#f8a9a9">
+
+      <MoneySend   color={appColors.danger} />
+    </CardComponent>
+      <View style={{paddingLeft:10}}>
+      <TextComponent   text="Đã trả: " />
+      <TextComponent text="0đ" font={fontFamily.bold} />
+      </View>
+    
+    </RowComponent>
+    <View style={{width:1, backgroundColor:appColors.gray,marginHorizontal:10, height:45}}></View>
+    
+    <RowComponent>
+      <CardComponent styles={[globalStyles.noSpaceCard]} color="#bae0bd">
+        <MoneyRecive size={20} color={appColors.green} />
+      </CardComponent>
+      <View style={{paddingLeft:10}}>
+      <TextComponent text="Tổng tiền:" />
+      <TextComponent text="0đ" font={fontFamily.bold} />
+      </View>
+    </RowComponent>
+  </RowComponent>
+</SectionComponent>
+
+<SpaceComponent height={30} />
+
+<SectionComponent styles={[globalStyles.shadow,{backgroundColor:appColors.white, borderRadius:25}]}>
+  <TextComponent  text="Số dư nợ khác" size={18} font={fontFamily.bold} styles={{paddingTop:10}} />
+  <View  style={[{borderBottomWidth: 1, borderBottomColor:appColors.border, paddingTop:15}]}></View>
+<View>
+  <RowComponent justify="space-between" styles={[{paddingVertical:15}]} >
+    <RowComponent>
+      <CircleComponent>
+        <View></View>
+      </CircleComponent>
+      <TextComponent text="Đoàn Quang vũ" size={16} font={fontFamily.medium} styles={{paddingLeft:5}} />
+    </RowComponent>
+    <TextComponent text="0đ" size={16} font={fontFamily.medium} color={appColors.black} />
+    
+  </RowComponent>
+  <RowComponent justify="space-between" styles={[{paddingVertical:15}]} >
+    <RowComponent>
+      <CircleComponent>
+        <View></View>
+      </CircleComponent>
+      <TextComponent text="Đoàn Quang B" size={16} font={fontFamily.medium} styles={{paddingLeft:5}} />
+    </RowComponent>
+    <TextComponent text="0đ" size={16} font={fontFamily.medium} color={appColors.black} />
+    
+  </RowComponent>
+  <RowComponent justify="space-between" styles={[{paddingVertical:15}]} >
+    <RowComponent>
+      <CircleComponent>
+        <View></View>
+      </CircleComponent>
+      <TextComponent text="Đoàn Quang C" size={16} font={fontFamily.medium} styles={{paddingLeft:5}} />
+    </RowComponent>
+    <TextComponent text="0đ" size={16} font={fontFamily.medium} color={appColors.black} />
+    
+  </RowComponent>
+
+</View> 
+  
+</SectionComponent>
+ */}

@@ -9,7 +9,7 @@ export interface Schedule {
   address: string;
   position: {
     lat: number;
-    lng: number;
+    long: number;
   };
   description: string;
 }

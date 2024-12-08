@@ -15,14 +15,14 @@ import TextComponent from "../../../components/TextComponent";
 import CardComponent from "../../../components/CardComponent";
 import { globalStyles } from "../../../styles/globalStyles";
 import { ButtonComponent } from "../../../components";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { Schedule } from "../../../models/ScheduleModel";
 import scheduleAPI from "../../../apis/scheduleApi";
 import { RootStackParamList } from "../../../navigations/types";
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Modalize } from "react-native-modalize";
 import AddNewScheduleModal from "../../../modals/eventModals/AddScheduleModal";
-
+import { ActivityIndicator } from "react-native-paper";
 
 
 type ScheduleTabRouteProp = RouteProp<RootStackParamList, 'ScheduleTab'>;
@@ -30,21 +30,12 @@ type ScheduleTabNavigationProp = StackNavigationProp<RootStackParamList, 'Schedu
 
 const ScheduleTab = ({ eventId }: { eventId: string }) => {
   const navigation = useNavigation<ScheduleTabNavigationProp>();
-  const route = useRoute<ScheduleTabRouteProp>();
-
-  const modalizeRef = useRef<Modalize>(null);
-
-
 
   const [scheduleData, setScheduleData] = useState<Schedule[]>([]);
-
-  const openModal = () => {
-    modalizeRef.current?.open();
-  };
-
- 
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchSchedules = async () => {
+    setLoading(true);
 
     try {
       const res = await scheduleAPI.getSchedules(eventId);
@@ -55,25 +46,25 @@ const ScheduleTab = ({ eventId }: { eventId: string }) => {
     } catch (error) {
       console.error("Error fetching schedules:", error);
       
+    } finally {
+      setLoading(false);
     }
   };
   
-  useEffect(() => {
-
-    if (eventId) {
+  useFocusEffect(
+    React.useCallback(() => {
       fetchSchedules();
-    }
-  }, [eventId]);
+    }, [eventId])
+  );
 
   const handleSchedulePress = (item: Schedule) => {
     navigation.navigate("ScheduleDetailScreen", { eventId, scheduleId: item._id });
 
   };
 
-  // const handleAddSchedule = () => {
-  //   navigation.navigate("AddNewSchedule", { eventId, fetchSchedules });
-  // };
-
+  const handleAddSchedule = () => {
+    navigation.navigate("AddNewSchedule", { eventId });
+  };
   const renderScheduleItem = ({ item }: { item: Schedule }) => (
     <TouchableOpacity onPress={() => handleSchedulePress(item)}>
       <CardComponent styles={[globalStyles.card, styles.scheduleCard]}>
@@ -113,16 +104,26 @@ const ScheduleTab = ({ eventId }: { eventId: string }) => {
         </ScrollView>
       </View>
 
-      <ButtonComponent text="Thêm hoạt động" type='primary' onPress={openModal} />
+      <ButtonComponent text="Thêm hoạt động" type='primary' onPress={handleAddSchedule} />
 
+      {loading ? (
+        <View>
+          <ActivityIndicator size={20} color={appColors.primary} />
+        </View>
+      ) : scheduleData.length === 0 ? (
+        <TextComponent text="Không có lịch trình nào."  />
+      ) : (
       <FlatList
         data={scheduleData}
         keyExtractor={(item) => item._id}
         renderItem={renderScheduleItem}
+        refreshing={loading}
+        onRefresh={fetchSchedules}
         contentContainerStyle={styles.listContent}
       />
+      )}
 
-      <AddNewScheduleModal ref={modalizeRef} eventId={eventId} fetchSchedules={fetchSchedules} />
+      
 
     </View>
   );

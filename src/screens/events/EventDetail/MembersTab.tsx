@@ -1,12 +1,13 @@
 // client/travelsplits/src/screens/events/MembersTab.tsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { appColors } from "../../../constants/appColors";
 import TextComponent from "../../../components/TextComponent";
@@ -15,58 +16,118 @@ import { globalStyles } from "../../../styles/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { ButtonComponent } from "../../../components";
 import { fontFamily } from "../../../constants/fontFamilies";
+import memberAPI from "../../../apis/memberApi";
+import AddMemberModal from "../../../modals/eventModals/AddMemberModal";
+import { Member } from "../../../models/memberModel";
+import { Trash } from "iconsax-react-native";
 
-const MembersTab = () => {
-  // Dữ liệu mẫu về thành viên
-  const membersData = [
-    {
-      id: "1",
-      name: "Đoàn Quang Vũ (Tôi)",
-      email: "kungvjp002@gmail.com",
-      role: "Chủ trì",
-    },
-    {
-      id: "2",
-      name: "Vũ Đoàn Quang",
-      email: "dqv2k2@gmail.com",
-      role: "Thành viên",
-    },
-  ];
+const MembersTab = ({ eventId }: { eventId: string }) => {
+  
+  const [membersData, setMembersData] = useState<Member[]>([]);
+  const [isAddMemberModalVisible, setIsAddMemberModalVisible] = useState(false);
 
-  const renderMemberItem = ({ item }: { item: any }) => (
+  const fetchMembers = async () => {
+    try {
+      const res = await memberAPI.getEventMembers(eventId);
+      console.log("Dữ liệu thành viên:", res);
+      
+      if (res && Array.isArray(res)) {
+        setMembersData(res);
+      } else if (res?.data && Array.isArray(res.data)) {
+        setMembersData(res.data);
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu thành viên:", error);
+    }
+  };
+  
+  // Sử dụng trong useEffect
+  useEffect(() => {
+    if (eventId) {
+      fetchMembers();
+    }
+  }, [eventId]);
+
+  const handleRemoveMember = (memberId: string) => {
+    Alert.alert(
+      "Xác nhận xóa",
+      "Bạn có chắc chắn muốn xóa thành viên này không?",
+      [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Hủy xóa thành viên"),
+          style: "cancel",
+        },
+        {
+          text: "Xóa",
+          onPress: async () => {
+            try {
+              await memberAPI.removeMemberFromEvent(eventId, memberId);
+              Alert.alert("Thành công", "Xóa thành viên thành công.");
+              fetchMembers(); // Cập nhật lại danh sách thành viên sau khi xóa thành công
+            } catch (error) {
+              console.error("Lỗi khi xóa thành viên:", error);
+              Alert.alert("Lỗi", "Không thể xóa thành viên. Vui lòng thử lại.");
+            }
+          },
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+  
+  
+  // Sử dụng khi thành viên mới được thêm
+  const handleMemberAdded = (email: string) => {
+    setIsAddMemberModalVisible(false);
+    fetchMembers(); // Cập nhật danh sách sau khi thêm thành viên
+  };
+  
+
+  const handleAddMemberPress = () => {
+    setIsAddMemberModalVisible(true);
+  }
+  
+  const handleCloseAddMemberModal = () => {
+    setIsAddMemberModalVisible(false);
+  };
+  
+
+  const renderMemberItem = ({ item }: { item: Member }) => (
     <CardComponent styles={[globalStyles.card, styles.memberCard]}>
       <View style={styles.memberIcon}>
         <View
           style={[
             styles.memberInitial,
             {
-              backgroundColor: item.role === "Chủ trì" ? appColors.primary : appColors.green,
+              backgroundColor: item.role === "host" ? appColors.primary : appColors.green,
             },
           ]}
         >
           <TextComponent
-            text={item.name.charAt(0)}
+            text={ item.userId?.email?.charAt(0)} // Truy cập name từ item.userId
             color={appColors.white}
             size={18}
           />
         </View>
       </View>
       <View style={styles.memberDetails}>
-        <TextComponent text={item.name} font="Roboto-Medium" size={16} />
-        <TextComponent text={item.email} size={14} color={appColors.gray} />
+        <TextComponent text={item.userId?.fullname || "???"} font="Roboto-Medium" size={16} />
+        <TextComponent text={item.userId?.email || "No Email"} size={14} color={appColors.black} />
       </View>
-      {item.role === "Chủ trì" && (
-        <View style={styles.roleBadge}>
-          <TextComponent text="Chủ trì" color={appColors.white} size={12} />
-        </View>
-      )}
+      {item.role !== "host" && ( // Không cho phép xóa host
+            <TouchableOpacity onPress={() => handleRemoveMember(item.userId._id)}>
+                <Trash  color={appColors.danger} size={20} />
+            </TouchableOpacity>
+        )}
     </CardComponent>
   );
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.addMemberButton}>
+        <TouchableOpacity style={styles.addMemberButton} onPress={handleAddMemberPress}>
           <Ionicons name="add-circle-outline" size={24} color={appColors.primary} />
           <TextComponent
             text="Thêm thành viên"
@@ -78,9 +139,17 @@ const MembersTab = () => {
 
       <FlatList
         data={membersData}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         renderItem={renderMemberItem}
         contentContainerStyle={styles.listContent}
+        // style={{ flex: 1 }}
+      />
+
+      <AddMemberModal
+        visible={isAddMemberModalVisible}
+        onClose={handleCloseAddMemberModal}
+        onSave={handleMemberAdded}
+        eventId={eventId}
       />
     </View>
   );
