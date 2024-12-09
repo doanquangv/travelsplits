@@ -9,6 +9,8 @@ import TabNavigation from "./TabNavigation";
 import AddScheduleScreen from "../screens/events/EventDetail/ScheduleScreen/AddNewScheduleScreen";
 import { RootStackParamList } from "./types";
 import EditScheduleScreen from "../screens/events/EventDetail/ScheduleScreen/EditScheduleScreen";
+import ExpenseDetailScreen from "../screens/events/EventDetail/expenseScreen/ExpenseDetailScreen";
+import EditExpenseScreen from "../screens/events/EventDetail/expenseScreen/EditExpenseScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -28,6 +30,20 @@ const MainNavigator = () => {
         name="EditScheduleScreen"
         component={EditScheduleScreen}
         options={{ title: "Chỉnh Sửa Lịch Trình" }}
+      />
+      <Stack.Screen
+        name="ExpenseDetailScreen"
+        component={(props: any) => (
+          <ExpenseDetailScreen
+            {...props}
+            onDataChange={props.route.params.onDataChange} // Truyền callback từ params
+          />
+        )}
+      />
+      <Stack.Screen
+        name="EditExpenseScreen"
+        component={EditExpenseScreen}
+        
       />
     </Stack.Navigator>
   );

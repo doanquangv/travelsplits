@@ -10,7 +10,8 @@ import MembersTab from "../../screens/events/EventDetail/MembersTab";
 import { Text, View } from "react-native";
 import { fontFamily } from "../../constants/fontFamilies";
 import ScheduleNavigator from "./ScheduleNavigator";
-import ExpensesTab from "../../screens/events/EventDetail/expenseScreen/ExpensesTab";
+import ExpensesTab from "../../screens/events/EventDetail/expenseScreen/DebtTab";
+import ExpensesNavigator from "../../screens/events/EventDetail/expenseScreen/ExpensesNavigator";
 
 // Định nghĩa kiểu cho Tab Navigator
 export type EventDetailTabParamList = {
@@ -43,7 +44,7 @@ const TabEventNavigation: React.FC<TabEventNavigationProps> = ({ eventId }) => {
     >
       <Tab.Screen
         name="Expenses"
-        children={(props) => <ExpensesTab {...props} eventId={eventId} />}
+        children={(props) => <ExpensesNavigator  {...props} eventId={eventId} />}
         options={{
           tabBarLabel: ({ color }) => (
             <View style={{ alignItems: "center" }}>

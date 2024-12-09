@@ -20,6 +20,7 @@ import { appColors } from "../../../../constants/appColors";
 import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Modalize } from "react-native-modalize";
 import { ActivityIndicator } from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
 
 type ScheduleDetailScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -42,7 +43,6 @@ const ScheduleDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const modalizeRef = useRef<Modalize>(null); // Modal reference
 
-  
   const fetchScheduleDetails = async () => {
     try {
       const res = await scheduleAPI.getSchedule(eventId, scheduleId); // Sử dụng getSchedule với eventId và scheduleId
@@ -61,7 +61,7 @@ const ScheduleDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     useCallback(() => {
       fetchScheduleDetails();
     }, [])
-  )
+  );
 
   const handleEditSchedule = () => {
     modalizeRef.current?.close();
@@ -82,18 +82,17 @@ const ScheduleDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       await scheduleAPI.deleteSchedule(eventId, scheduleId);
       Alert.alert("Thành công", "Xóa lịch trình thành công.");
-   
+
       navigation.goBack(); // Hoặc navigation.goBack();
     } catch (error) {
       Alert.alert("Lỗi", "Có lỗi xảy ra khi xóa lịch trình.");
     }
   };
-  
 
   if (loading) {
     return (
       <ContainerComponent>
-          <ActivityIndicator size={20} color={appColors.primary} />
+        <ActivityIndicator size={20} color={appColors.primary} />
       </ContainerComponent>
     );
   }
@@ -101,23 +100,29 @@ const ScheduleDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   if (!schedule) {
     return (
       <ContainerComponent>
-          <TextComponent text="Không tìm thấy lịch trình." />
+        <TextComponent text="Không tìm thấy lịch trình." />
       </ContainerComponent>
     );
   }
 
   return (
-    <View style={{flex:1}}>
-          <RowComponent justify="space-between">
+    <LinearGradient colors={["#FFDEE9", "#B5FFFC"]} style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <RowComponent justify="space-between">
           <TouchableOpacity
-            style={{ width: 48, height: 48, justifyContent: "center",marginLeft:10 }}
+            style={{
+              width: 48,
+              height: 48,
+              justifyContent: "center",
+              marginLeft: 10,
+            }}
             onPress={() => navigation.goBack()}
           >
             <ArrowLeft size={28} color={appColors.black} />
           </TouchableOpacity>
 
-         <TextComponent text={schedule.name} title size={25} styles={{}} />
-         <TouchableOpacity
+          <TextComponent text={schedule.name} title size={25} styles={{}} />
+          <TouchableOpacity
             style={{ width: 48, height: 48, justifyContent: "center" }}
             onPress={() => modalizeRef.current?.open()}
           >
@@ -125,56 +130,81 @@ const ScheduleDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           </TouchableOpacity>
         </RowComponent>
 
-        <SectionComponent styles={{}}>
-        <SpaceComponent height={20} />
+        <SectionComponent styles={{
+        backgroundColor: appColors.white,
+        borderRadius: 16,
+        padding: 16,
+        marginHorizontal: 16,
+        marginVertical: 20,
+        elevation: 2, // Hiệu ứng đổ bóng
+      }}>
+         
 
-        <RowComponent justify="flex-start">
-        <Ionicons name="location-outline" size={20} color={appColors.primary} />
-        <TextComponent
-          text={schedule.address}
-          styles={{ marginLeft: 8 }}
-        />
-      </RowComponent>
-      <SpaceComponent height={10} />
-
-      <RowComponent justify="flex-start">
-      <MaterialIcons name="calendar-today" size={20} color={appColors.primary} />
-        <TextComponent
-          text={new Date(schedule.date).toLocaleDateString()}
-          styles={{ marginLeft: 8 }}
-        />
-      </RowComponent>
-      <SpaceComponent height={10} />
-
-      <RowComponent justify="flex-start">
-      <Ionicons name="time-outline" size={20} color={appColors.primary} />
-        <TextComponent
-          text={`Bắt đầu: ${new Date(schedule.startAt).toLocaleTimeString()}`}
-          styles={{ marginLeft: 8 }}
-        />
-      </RowComponent>
-      <SpaceComponent height={10} />
-
-      <RowComponent justify="flex-start">
-      <Ionicons name="time-outline" size={20} color={appColors.primary} />
-        <TextComponent
-          text={`Kết thúc: ${new Date(schedule.endAt).toLocaleTimeString()}`}
-          styles={{ marginLeft: 8 }}
-        />
-      </RowComponent>
-
-      
-    </SectionComponent>
-
-      {/* Nút Chỉnh sửa và Xóa */}
-      <Modalize ref={modalizeRef} modalHeight={200}>
-        <View style={{padding:20}} >
-          <ButtonComponent type="primary" text="Chỉnh sửa lịch trình này" color={appColors.primary} onPress={handleEditSchedule}/>
+          <RowComponent justify="flex-start">
+            <Ionicons
+              name="location-outline"
+              size={20}
+              color={appColors.primary}
+            />
+            <TextComponent text={schedule.address} styles={{ marginLeft: 8 }} />
+          </RowComponent>
           <SpaceComponent height={10} />
-          <ButtonComponent type="primary" text="Xóa lịch trình này" color={appColors.danger} onPress={handleDeleteSchedule}/>
-        </View>
-      </Modalize>
-    </View>
+
+          <RowComponent justify="flex-start">
+            <MaterialIcons
+              name="calendar-today"
+              size={20}
+              color={appColors.primary}
+            />
+            <TextComponent
+              text={new Date(schedule.date).toLocaleDateString()}
+              styles={{ marginLeft: 8 }}
+            />
+          </RowComponent>
+          <SpaceComponent height={10} />
+
+          <RowComponent justify="flex-start">
+            <Ionicons name="time-outline" size={20} color={appColors.primary} />
+            <TextComponent
+              text={`Bắt đầu: ${new Date(
+                schedule.startAt
+              ).toLocaleTimeString()}`}
+              styles={{ marginLeft: 8 }}
+            />
+          </RowComponent>
+          <SpaceComponent height={10} />
+
+          <RowComponent justify="flex-start">
+            <Ionicons name="time-outline" size={20} color={appColors.primary} />
+            <TextComponent
+              text={`Kết thúc: ${new Date(
+                schedule.endAt
+              ).toLocaleTimeString()}`}
+              styles={{ marginLeft: 8 }}
+            />
+          </RowComponent>
+        </SectionComponent>
+
+        {/* Nút Chỉnh sửa và Xóa */}
+        <Modalize ref={modalizeRef} modalHeight={200}>
+          <View style={{ padding: 20 }}>
+            <ButtonComponent
+              type="primary"
+              text="Chỉnh sửa lịch trình này"
+              color={appColors.primary}
+              onPress={handleEditSchedule}
+            />
+            <SpaceComponent height={10} />
+            <ButtonComponent
+              type="primary"
+              text="Xóa lịch trình này"
+              color={appColors.danger}
+              onPress={handleDeleteSchedule}
+            />
+          </View>
+        </Modalize>
+      </View>
+    </LinearGradient>
   );
 };
 
@@ -196,6 +226,5 @@ const styles = StyleSheet.create({
     backgroundColor: appColors.danger,
   },
 });
-
 
 export default ScheduleDetailScreen;

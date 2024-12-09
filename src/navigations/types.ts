@@ -16,8 +16,15 @@ export type RootStackParamList = {
     };
     EventDetail: { item: any };
     main: undefined;
-    
+    TransactionsTab: undefined; // Màn hình không có tham số
+
+    ExpenseDetailScreen:{eventId:string,expenseId:string,onDataChange:()=>void}
     SelectLocation: undefined; // Nếu không nhận params
+    EditExpenseScreen: {
+      eventId: string;
+      expenseId: string;
+      onDataChange: () => void;
+    };
     // Thêm các màn hình khác nếu cần
   };
   

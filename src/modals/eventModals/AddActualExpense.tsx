@@ -6,9 +6,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { ButtonComponent, InputComponent, RowComponent, SectionComponent, TimePicker } from "../../components";
+import { ButtonComponent, InputComponent, RowComponent, SectionComponent, SpaceComponent, TimePicker } from "../../components";
 import { appColors } from "../../constants/appColors";
 import TextComponent from "../../components/TextComponent";
+import RNPickerSelect from "react-native-picker-select";
+import { FlatList } from "react-native-gesture-handler";
 
 
 interface AddActualExpenseProps {
@@ -23,6 +25,15 @@ interface AddActualExpenseProps {
   eventId: string;
 }
 
+const defaultCategories = [
+  { label: "Ăn uống", value: "Ăn uống" },
+  { label: "Đi lại", value: "Đi lại" },
+  { label: "nghỉ dưỡng", value: "nghỉ dưỡng" },
+  { label: "Mua sắm", value: "Mua sắm" },
+  { label: "Vui chơi", value: "Vui chơi" },
+  { label: "Khác", value: "Khác" },
+];
+
 const AddActualExpense: React.FC<AddActualExpenseProps> = ({
   visible,
   onClose,
@@ -35,6 +46,8 @@ const AddActualExpense: React.FC<AddActualExpenseProps> = ({
     category: "",
     date: new Date().toISOString(), // Default to today's date
   });
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+
 
   const handleSave = () => {
     onSave(expense);
@@ -63,7 +76,7 @@ const AddActualExpense: React.FC<AddActualExpenseProps> = ({
           <TextComponent
             text="Thêm Chi Phí"
             title
-            styles={[styles.modalTitle]}
+            
           />
           <ScrollView style={{ width: "100%" }}>
             {/* Tên khoản chi */}
@@ -80,11 +93,17 @@ const AddActualExpense: React.FC<AddActualExpenseProps> = ({
               onChange={(text) => setExpense({ ...expense, amount: text })}
             />
             {/* Danh mục */}
-            <InputComponent
-              placeholder="Danh mục (Ví dụ: Ăn uống, Đi lại)"
-              value={expense.category}
-              onChange={(text) => setExpense({ ...expense, category: text })}
-            />
+            <TouchableOpacity
+              onPress={() => setShowCategoryModal(true)}
+              style={styles.categoryPicker}
+            >
+              <TextComponent
+                text={
+                  expense.category ? expense.category : "Chọn danh mục..."
+                }
+                color={expense.category ? appColors.text : appColors.gray}
+              />
+            </TouchableOpacity>
             {/* Ngày */}
             <TimePicker
               label="Ngày chi tiêu"
@@ -115,6 +134,43 @@ const AddActualExpense: React.FC<AddActualExpenseProps> = ({
             />
           </RowComponent>
         </SectionComponent>
+        <Modal
+          visible={showCategoryModal}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setShowCategoryModal(false)}
+        >
+          <View style={styles.categoryModalContainer}>
+            <View style={styles.categoryModalContent}>
+              <TextComponent
+                text="Chọn Danh Mục"
+                title
+                styles={{ marginBottom: 20 }}
+              />
+              <FlatList
+                data={defaultCategories}
+                keyExtractor={(item) => item.value}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setExpense({ ...expense, category: item.value });
+                      setShowCategoryModal(false);
+                    }}
+                    style={styles.categoryItem}
+                  >
+                    <TextComponent text={item.label} />
+                  </TouchableOpacity>
+                )}
+              />
+              <SpaceComponent height={10}/>
+              <ButtonComponent 
+                text="Đóng"
+                onPress={() => setShowCategoryModal(false)}
+                type="primary"
+              />
+            </View>
+          </View>
+        </Modal>
       </View>
     </Modal>
   );
@@ -139,6 +195,32 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
+  },
+  
+  categoryPicker: {
+    padding: 15,
+    borderWidth: 1,
+    borderColor: appColors.border,
+    borderRadius: 5,
+    marginVertical: 10,
+    backgroundColor: appColors.white,
+  },
+  categoryModalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  categoryModalContent: {
+    width: "90%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+  },
+  categoryItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: appColors.border,
   },
 });
 

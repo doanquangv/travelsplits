@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+// DebtTab.tsx
+
+import React, { useState } from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { appColors } from "../../../../constants/appColors";
 import {
   CircleComponent,
@@ -12,15 +14,17 @@ import TextComponent from "../../../../components/TextComponent";
 import CardComponent from "../../../../components/CardComponent";
 import { fontFamily } from "../../../../constants/fontFamilies";
 import { MoneyRecive, MoneySend } from "iconsax-react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { FAB } from "react-native-paper";
 import AddBudgetModal from "../../../../modals/eventModals/AddBudgetModal";
 import expenseAPI from "../../../../apis/expenseApi";
 import AddActualExpense from "../../../../modals/eventModals/AddActualExpense";
-import memberAPI from "../../../../apis/memberApi";
 
-interface ExpensesTabProps {
+interface DebtTabProps {
   eventId: string;
+  totalBudget: any;
+  actualExpenses: any[];
+  members: any[];
+  onDataChange: () => void; // callback khi có thay đổi dữ liệu
 }
 
 const formatCurrency = (value: number): string => {
@@ -29,85 +33,29 @@ const formatCurrency = (value: number): string => {
     .replace("₫", "đ");
 };
 
-const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
-  const [members, setMembers] = useState<any[]>([]);
-
+const DebtTab: React.FC<DebtTabProps> = ({
+  eventId,
+  totalBudget,
+  actualExpenses,
+  members,
+  onDataChange
+}) => {
   const [isFabOpen, setIsFabOpen] = useState(false); // Trạng thái mở/đóng FAB
   const [showBudgetModal, setShowBudgetModal] = useState(false); // Trạng thái modal
   const [showExpenseModal, setShowExpenseModal] = useState(false); // Trạng thái modal chi tiêu
 
-  const [totalBudget, setTotalBudget] = useState<any>(null); // Chỉ lưu thông tin ngân sách tổng
-  const [actualExpenses, setActualExpenses] = useState<any[]>([]); // Chỉ lưu danh sách chi tiêu
-
-  const [loading, setLoading] = useState(false); // Trạng thái loading
-
-  const fetchExpenses = async () => {
-    setLoading(true);
-    try {
-      const res = await expenseAPI.HandleExpense(`/${eventId}`);
-
-      // console.log(res.data);
-      // Kiểm tra dữ liệu trả về và đảm bảo nó có tồn tại
-      if (res && res.data) {
-        const { totalBudget, actualExpenses } = res.data;
-        setTotalBudget(
-          totalBudget ? totalBudget : { amount: 0, title: "", addedBy: "" }
-        );
-        setActualExpenses(Array.isArray(actualExpenses) ? actualExpenses : []);
-      } else {
-        console.error("Dữ liệu trả về từ server không hợp lệ:", res);
-        setTotalBudget({ amount: 0, title: "", addedBy: "" });
-        setActualExpenses([]);
-      }
-    } catch (error) {
-      console.error("Lỗi khi tải chi phí:", error);
-      setTotalBudget({ amount: 0, title: "", addedBy: "" }); // Đặt tổng ngân sách thành giá trị mặc định
-      setActualExpenses([]); // Đặt danh sách chi phí thành rỗng nếu gặp lỗi
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchExpenses();
-  }, [eventId]);
-  // console.log("totalBudget", totalBudget);
-  // console.log("actualExpenses", actualExpenses);
-
-  const fetchMembers = async () => {
-    try {
-      const res = await memberAPI.getEventMembers(eventId);
-      // API này trả về mảng members
-      if (res && Array.isArray(res)) {
-        setMembers(res);
-      } else if (res?.data && Array.isArray(res.data)) {
-        setMembers(res.data);
-      } else {
-        setMembers([]);
-      }
-    } catch (error) {
-      console.error("Lỗi khi tải thành viên:", error);
-      setMembers([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchExpenses();
-    fetchMembers(); // Lấy dữ liệu thành viên
-  }, [eventId]);
+  const totalPaid = actualExpenses?.reduce(
+    (sum: number, expense: { amount: number }) => sum + expense.amount,
+    0
+  );
+  const numberOfMembers = members.length || 1;
+  const difference = (totalBudget?.amount || 0) - (totalPaid || 0);
+  const memberDebt = difference / numberOfMembers;
 
   const handleActionPress = (action: string) => {
-    setIsFabOpen(false); // Đóng FAB sau khi chọn hành động
-    console.log("Selected Action:", action); // Thay thế bằng logic của bạn
-    if (action === "addBudget") {
-      // Hiển thị modal để thêm tổng tiền
-    } else if (action === "addExpense") {
-      // Hiển thị modal để thêm chi tiêu
-    } else if (action === "addSchedule") {
-      // Hiển thị modal để thêm lịch trình
-    } else if (action === "addMember") {
-      // Hiển thị modal để thêm thành viên
-    }
+    setIsFabOpen(false); 
+    console.log("Selected Action:", action);
+    // Nếu bạn muốn hiển thị modal thêm lịch trình, thêm thành viên, có thể xử lý ở đây
   };
 
   const handleSaveBudget = async (data: {
@@ -121,11 +69,9 @@ const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
         { ...data, amount: parseFloat(data.amount) },
         "put"
       );
-
-      // Cập nhật giao diện
-      setTotalBudget(response.data); // Lưu dữ liệu mới
-      await fetchExpenses();
-      setShowBudgetModal(false); // Đóng modal
+      // Sau khi thêm budget thành công, gọi onDataChange để fetch lại dữ liệu
+      onDataChange();
+      setShowBudgetModal(false);
     } catch (error) {
       console.error("Lỗi khi thêm tổng ngân sách:", error);
     }
@@ -156,43 +102,23 @@ const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
         "post"
       );
 
-      if (response.data?.actualExpenses) {
-        setActualExpenses(response.data.actualExpenses); // Cập nhật danh sách chi tiêu
-      } else {
-        console.error(
-          "Dữ liệu trả về từ server không hợp lệ:",
-          response.data.actualExpenses
-        );
+      if (!response.data?.actualExpenses) {
+        console.error("Dữ liệu trả về từ server không hợp lệ:", response.data);
         alert("Lỗi: Không thể cập nhật danh sách chi tiêu.");
       }
 
-      setShowExpenseModal(false); // Đóng modal
+      // Sau khi thêm expense thành công, gọi onDataChange để fetch lại dữ liệu
+      onDataChange();
+      setShowExpenseModal(false);
     } catch (error) {
       if (error instanceof Error) {
-        console.error(
-          "Lỗi khi thêm chi tiêu:",
-          error.message || "Lỗi không xác định"
-        );
+        console.error("Lỗi khi thêm chi tiêu:", error.message || "Lỗi không xác định");
       } else {
         console.error("Lỗi khi thêm chi tiêu:", "Lỗi không xác định");
       }
-      if (error instanceof Error) {
-        alert(
-          `Lỗi khi thêm chi tiêu: ${error.message || "Lỗi không xác định"}`
-        );
-      } else {
-        alert("Lỗi khi thêm chi tiêu: Lỗi không xác định");
-      }
+      alert("Lỗi khi thêm chi tiêu");
     }
   };
-
-  const totalPaid = actualExpenses?.reduce(
-    (sum: number, expense: { amount: number }) => sum + expense.amount,
-    0
-  );
-  const numberOfMembers = members.length || 1;
-  const difference = (totalBudget?.amount || 0) - (totalPaid || 0);
-  const memberDebt = difference / numberOfMembers;
 
   return (
     <View style={{ flex: 1 }}>
@@ -212,7 +138,7 @@ const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
           ]}
         >
           <View style={[globalStyles.center, { paddingTop: 20 }]}>
-            <TextComponent text="Số dư nợ của bạn: " size={18} />
+            <TextComponent text="Số dư nợ của bạn:" size={18} />
             <TextComponent text={`${formatCurrency(memberDebt)}`} font={fontFamily.bold} size={24} />
           </View>
           <SpaceComponent height={20} />
@@ -260,8 +186,6 @@ const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
           </RowComponent>
         </SectionComponent>
 
-        {/* <SpaceComponent height={30} /> */}
-
         <SectionComponent
           styles={[
             globalStyles.shadow,
@@ -307,7 +231,7 @@ const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
                   />
                 </RowComponent>
                 <TextComponent
-                  text={`${formatCurrency(memberDebt)}`} // Hiển thị số dư nợ
+                  text={`${formatCurrency(memberDebt)}`}
                   size={16}
                   font={fontFamily.medium}
                   color={appColors.black}
@@ -321,33 +245,30 @@ const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
       <FAB.Group
         visible={true}
         open={isFabOpen}
-        icon={isFabOpen ? "close" : "plus"} // Icon chuyển đổi khi mở/đóng
+        icon={isFabOpen ? "close" : "plus"}
         actions={[
           {
-            icon: "cash-plus", // Biểu tượng cho thêm tổng tiền
+            icon: "cash-plus",
             label: "Thêm Tổng Tiền",
             onPress: () => setShowBudgetModal(true),
           },
           {
-            icon: "clipboard-plus", // Biểu tượng cho thêm chi tiêu
+            icon: "clipboard-plus",
             label: "Thêm Chi Tiêu",
             onPress: () => setShowExpenseModal(true),
           },
           {
-            icon: "calendar-plus", // Biểu tượng cho thêm lịch trình
+            icon: "calendar-plus",
             label: "Thêm Lịch Trình",
             onPress: () => handleActionPress("addSchedule"),
           },
           {
-            icon: "account-plus", // Biểu tượng cho thêm thành viên
+            icon: "account-plus",
             label: "Thêm Thành Viên",
             onPress: () => handleActionPress("addMember"),
           },
         ]}
-        onStateChange={({ open }) => setIsFabOpen(open)} // Thay đổi trạng thái mở/đóng FAB
-        onPress={() => {
-          // Nếu cần, bạn có thể thêm logic ở đây
-        }}
+        onStateChange={({ open }) => setIsFabOpen(open)}
         style={styles.fabGroup}
       />
       <AddBudgetModal
@@ -359,14 +280,15 @@ const ExpensesTab: React.FC<ExpensesTabProps> = ({ eventId }) => {
       <AddActualExpense
         visible={showExpenseModal}
         onClose={() => setShowExpenseModal(false)}
-        onSave={handleSaveExpense} // Callback xử lý thêm chi tiêu
+        onSave={handleSaveExpense}
         eventId={eventId}
       />
     </View>
   );
 };
 
-export default ExpensesTab;
+export default DebtTab;
+
 const styles = StyleSheet.create({
   fabGroup: {
     position: "absolute",
