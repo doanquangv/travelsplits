@@ -40,6 +40,7 @@ import { RootState } from "../../redux/store";
 import { useAuth } from "../../hooks/useAuth";
 import { eventModel } from "../../models/eventModel";
 import debounce from "lodash.debounce";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const HomeScreen = () => {
@@ -121,6 +122,12 @@ const HomeScreen = () => {
     };
     getPermission();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchEvents(searchQuery);
+    }, [fetchEvents, searchQuery])
+  );
 
   const reverseGeocode = async ({
     lat,

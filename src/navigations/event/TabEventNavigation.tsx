@@ -1,6 +1,6 @@
 // client/travelsplits/src/screens/events/EventDetailTabs.tsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import { appColors } from "../../constants/appColors";
@@ -12,6 +12,7 @@ import { fontFamily } from "../../constants/fontFamilies";
 import ScheduleNavigator from "./ScheduleNavigator";
 import ExpensesTab from "../../screens/events/EventDetail/expenseScreen/DebtTab";
 import ExpensesNavigator from "../../screens/events/EventDetail/expenseScreen/ExpensesNavigator";
+import memberAPI from "../../apis/memberApi";
 
 // Định nghĩa kiểu cho Tab Navigator
 export type EventDetailTabParamList = {
@@ -27,6 +28,37 @@ interface TabEventNavigationProps {
 const Tab = createMaterialTopTabNavigator<EventDetailTabParamList>();
 
 const TabEventNavigation: React.FC<TabEventNavigationProps> = ({ eventId }) => {
+
+  const [isHost, setIsHost] = useState(false);
+  
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const res = await memberAPI.getEventMembers(eventId);
+        const currentUserId = "current_user_id"; // Lấy từ auth store
+        const isHostRole = res?.data?.some(
+          (member: any) => member.userId._id === currentUserId && member.role === "host"
+        );
+        setIsHost(isHostRole ?? false);
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+        setIsHost(false);
+      }
+    };
+
+    fetchUserRole();
+  }, [eventId]);
+
+  if (isHost === null) {
+    // Chưa xác định được isHost -> show loading hoặc return null
+    return <Text>Loading...</Text>;
+  }
+
+  const handleRefresh = () => {
+    // Hàm làm mới dữ liệu, bạn có thể gọi lại các API khi cần thiết
+    console.log("Refreshing data...");
+  };
+
   return (
     <Tab.Navigator
       initialRouteName="Expenses"
@@ -60,7 +92,7 @@ const TabEventNavigation: React.FC<TabEventNavigationProps> = ({ eventId }) => {
       />
       <Tab.Screen
         name="Schedule"
-        children={(props) => <ScheduleNavigator {...props} eventId={eventId} />}        
+        children={(props) => <ScheduleNavigator {...props} eventId={eventId}  onRefresh={handleRefresh} />}        
         options={{
           tabBarLabel: ({ color }) => (
             <View style={{ alignItems: "center" }}>
@@ -76,7 +108,7 @@ const TabEventNavigation: React.FC<TabEventNavigationProps> = ({ eventId }) => {
       />
       <Tab.Screen
          name="Members"
-          children={(props) => <MembersTab {...props} eventId={eventId} />}
+          children={(props) => <MembersTab {...props} eventId={eventId} onRefresh={handleRefresh} />}
         
         options={{
           tabBarLabel: ({ color }) => (

@@ -6,6 +6,7 @@ interface AuthState {
     id: string,
     email: string,
     accesstoken: string,
+    photoURL:string,
 }
 
 const initialState: AuthState = {
@@ -13,6 +14,7 @@ const initialState: AuthState = {
     id: '',
     email: '',
     accesstoken: '',
+    photoURL: '',
 };
 
 const authSlice = createSlice({

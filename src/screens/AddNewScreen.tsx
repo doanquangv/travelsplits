@@ -159,7 +159,7 @@ const handleLocation = (val: any) => {
         if (res && res.data) {
             console.log("Response Data:", res.data);
             navigation.navigate('Home');
-            dispatch(addEvent(res.data));
+            // dispatch(addEvent(res.data));
             setEventData({ ...initValues, hostId: auth.id });
         }
     } catch (error) {

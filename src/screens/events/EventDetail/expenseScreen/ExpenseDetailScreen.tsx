@@ -1,8 +1,13 @@
 // ExpenseDetailScreen.tsx
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { RootStackParamList } from "../../../../navigations/types"; // Bạn cần định nghĩa type cho stack
 import expenseAPI from "../../../../apis/expenseApi";
 import { Modalize } from "react-native-modalize";
@@ -30,14 +35,13 @@ type ExpenseDetailScreenNavigationProp = StackNavigationProp<
   "ExpenseDetailScreen"
 >;
 
-const ExpenseDetailScreen = ({ onDataChange }: { onDataChange: () => void }) => { // Thêm onDataChange
-    const navigation = useNavigation<ExpenseDetailScreenNavigationProp>();
-    const route = useRoute<ExpenseDetailRouteProp>();
+const ExpenseDetailScreen = () => {
+  const navigation = useNavigation<ExpenseDetailScreenNavigationProp>();
+  const route = useRoute<ExpenseDetailRouteProp>();
   const { eventId, expenseId } = route.params;
 
   const [expense, setExpense] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const modalizeRef = useRef<Modalize>(null);
 
   const fetchExpenseDetail = async () => {
     try {
@@ -59,14 +63,14 @@ const ExpenseDetailScreen = ({ onDataChange }: { onDataChange: () => void }) => 
     }
   };
 
-  useEffect(() => {
-    fetchExpenseDetail();
-  }, [eventId, expenseId]);
-
-  
+  useFocusEffect(
+    useCallback(() => {
+      fetchExpenseDetail();
+    }, [eventId, expenseId])
+  );
 
   const handleEditExpense = () => {
-    navigation.navigate("EditExpenseScreen", { eventId, expenseId, onDataChange });
+    navigation.navigate("EditExpenseScreen", { eventId, expenseId });
 
     // Điều hướng sang màn hình chỉnh sửa expense
     // navigation.navigate("EditExpenseScreen", { eventId, expenseId });
@@ -78,24 +82,31 @@ const ExpenseDetailScreen = ({ onDataChange }: { onDataChange: () => void }) => 
       .replace("₫", "đ");
   };
   const handleDeleteExpense = async () => {
-    Alert.alert("Xác nhận xóa", "Bạn có chắc chắn muốn xóa khoản chi tiêu này?", [
-      { text: "Hủy", style: "cancel" },
-      {
-        text: "Xóa",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await expenseAPI.HandleExpense(`/${eventId}/expenses/${expenseId}`, {}, "delete");
-            Alert.alert("Thành công", "Xóa khoản chi tiêu thành công.");
-            onDataChange(); // Gọi lại callback để làm mới danh sách
-            navigation.goBack();
-          } catch (error) {
-            Alert.alert("Lỗi", "Không thể xóa khoản chi tiêu.");
-            console.error(error);
-          }
+    Alert.alert(
+      "Xác nhận xóa",
+      "Bạn có chắc chắn muốn xóa khoản chi tiêu này?",
+      [
+        { text: "Hủy", style: "cancel" },
+        {
+          text: "Xóa",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await expenseAPI.HandleExpense(
+                `/${eventId}/expenses/${expenseId}`,
+                {},
+                "delete"
+              );
+              Alert.alert("Thành công", "Xóa khoản chi tiêu thành công.");
+              navigation.goBack();
+            } catch (error) {
+              Alert.alert("Lỗi", "Không thể xóa khoản chi tiêu.");
+              console.error(error);
+            }
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   if (loading) {
@@ -167,24 +178,6 @@ const ExpenseDetailScreen = ({ onDataChange }: { onDataChange: () => void }) => 
               size={16}
             />
           </SectionComponent>
-
-          <Modalize ref={modalizeRef} modalHeight={200}>
-            <View style={{ padding: 20 }}>
-              <ButtonComponent
-                type="primary"
-                text="Chỉnh sửa khoản chi tiêu này"
-                color={appColors.primary}
-                onPress={handleEditExpense}
-              />
-              <SpaceComponent height={10} />
-              <ButtonComponent
-                type="primary"
-                text="Xóa khoản chi tiêu này"
-                color={appColors.danger}
-                onPress={handleDeleteExpense}
-              />
-            </View>
-          </Modalize>
         </View>
       </SafeAreaView>
     </LinearGradient>

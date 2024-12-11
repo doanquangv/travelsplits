@@ -27,7 +27,7 @@ const defaultCategories = [
 const EditExpenseScreen = () => {
   const route = useRoute<EditExpenseRouteProp>();
   const navigation = useNavigation();
-  const { eventId, expenseId, onDataChange } = route.params as { eventId: string; expenseId: string; onDataChange: () => void };
+  const { eventId, expenseId } = route.params as { eventId: string; expenseId: string };
 
   const [expense, setExpense] = useState({
     name: "",
@@ -77,9 +77,7 @@ const EditExpenseScreen = () => {
         "put"
       );
       Alert.alert("Thành công", "Cập nhật khoản chi tiêu thành công.");
-      if (onDataChange) {
-        onDataChange(); // Cập nhật dữ liệu ở màn cha
-      }
+      
       navigation.goBack();
     } catch (error) {
       Alert.alert("Lỗi", "Không thể cập nhật khoản chi tiêu.");

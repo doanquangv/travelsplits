@@ -20,17 +20,31 @@ import memberAPI from "../../../apis/memberApi";
 import AddMemberModal from "../../../modals/eventModals/AddMemberModal";
 import { Member } from "../../../models/memberModel";
 import { Trash } from "iconsax-react-native";
+import expenseAPI from "../../../apis/expenseApi";
+import { FAB } from "react-native-paper";
+import AddBudgetModal from "../../../modals/eventModals/AddBudgetModal";
+import AddActualExpense from "../../../modals/eventModals/AddActualExpense";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../../../navigations/types";
 
-const MembersTab = ({ eventId }: { eventId: string }) => {
-  
+interface MembersTabProps {
+  eventId: string;
+  onRefresh: () => void;
+}
+
+const MembersTab: React.FC<MembersTabProps> = ({ eventId, onRefresh }) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const [membersData, setMembersData] = useState<Member[]>([]);
   const [isAddMemberModalVisible, setIsAddMemberModalVisible] = useState(false);
+  const [isFabOpen, setIsFabOpen] = useState(false);
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [showExpenseModal, setShowExpenseModal] = useState(false);
+  const [showAddMemberModalFromFab, setShowAddMemberModalFromFab] = useState(false);
 
   const fetchMembers = async () => {
     try {
-      const res = await memberAPI.getEventMembers(eventId);
-      console.log("Dữ liệu thành viên:", res);
-      
+      const res = await memberAPI.getEventMembers(eventId);      
       if (res && Array.isArray(res)) {
         setMembersData(res);
       } else if (res?.data && Array.isArray(res.data)) {
@@ -65,6 +79,7 @@ const MembersTab = ({ eventId }: { eventId: string }) => {
               await memberAPI.removeMemberFromEvent(eventId, memberId);
               Alert.alert("Thành công", "Xóa thành viên thành công.");
               fetchMembers(); // Cập nhật lại danh sách thành viên sau khi xóa thành công
+              onRefresh(); // Cập nhật lại dữ liệu tr
             } catch (error) {
               console.error("Lỗi khi xóa thành viên:", error);
               Alert.alert("Lỗi", "Không thể xóa thành viên. Vui lòng thử lại.");
@@ -81,7 +96,9 @@ const MembersTab = ({ eventId }: { eventId: string }) => {
   // Sử dụng khi thành viên mới được thêm
   const handleMemberAdded = (email: string) => {
     setIsAddMemberModalVisible(false);
+    setShowAddMemberModalFromFab(false);
     fetchMembers(); // Cập nhật danh sách sau khi thêm thành viên
+    onRefresh(); // Cập nhật lại dữ liệu tr
   };
   
 
@@ -91,7 +108,79 @@ const MembersTab = ({ eventId }: { eventId: string }) => {
   
   const handleCloseAddMemberModal = () => {
     setIsAddMemberModalVisible(false);
+    setShowAddMemberModalFromFab(false);
   };
+
+  const handleActionPress = (action: string) => {
+    setIsFabOpen(false);
+    if (action === "addSchedule") {
+      // Điều hướng sang thêm lịch trình
+      // Giả sử bạn đã có navigation, tùy vào code gốc của bạn
+      navigation.navigate("AddNewSchedule", { eventId });
+    } else if (action === "addMember") {
+      setShowAddMemberModalFromFab(true);
+    }
+  };
+
+  const handleSaveBudget = async (data: { title: string; amount: string; addedBy: string }) => {
+    try {
+      await expenseAPI.HandleExpense(
+        `/${eventId}/budget`,
+        { ...data, amount: parseFloat(data.amount) },
+        "put"
+      );
+      setShowBudgetModal(false);
+      onRefresh();
+    } catch (error) {
+      console.error("Lỗi khi thêm tổng ngân sách:", error);
+    }
+  };
+
+  const handleSaveExpense = async (data: {
+    name: string;
+    amount: string;
+    category: string;
+    date: string;
+  }) => {
+    try {
+      console.log("Gửi dữ liệu đến server:", {
+        name: data.name,
+        amount: parseFloat(data.amount),
+        category: data.category,
+        date: data.date,
+      });
+
+      const response = await expenseAPI.HandleExpense(
+        `/${eventId}/expenses`,
+        {
+          name: data.name,
+          amount: parseFloat(data.amount),
+          category: data.category,
+          date: data.date,
+        },
+        "post"
+      );
+
+      if (!response.data?.actualExpenses) {
+        console.error("Dữ liệu trả về từ server không hợp lệ:", response.data);
+        alert("Lỗi: Không thể cập nhật danh sách chi tiêu.");
+      }
+
+      setShowExpenseModal(false);
+      onRefresh();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(
+          "Lỗi khi thêm chi tiêu:",
+          error.message || "Lỗi không xác định"
+        );
+      } else {
+        console.error("Lỗi khi thêm chi tiêu:", "Lỗi không xác định");
+      }
+      alert("Lỗi khi thêm chi tiêu");
+    }
+  };
+
   
 
   const renderMemberItem = ({ item }: { item: Member }) => (
@@ -145,12 +234,61 @@ const MembersTab = ({ eventId }: { eventId: string }) => {
         // style={{ flex: 1 }}
       />
 
+      <FAB.Group
+        visible={true}
+        open={isFabOpen}
+        icon={isFabOpen ? "close" : "plus"}
+        actions={[
+          {
+            icon: "cash-plus",
+            label: "Thêm Tổng Tiền",
+            onPress: () => setShowBudgetModal(true),
+          },
+          {
+            icon: "clipboard-plus",
+            label: "Thêm Chi Tiêu",
+            onPress: () => setShowExpenseModal(true),
+          },
+          {
+            icon: "calendar-plus",
+            label: "Thêm Lịch Trình",
+            onPress: () => handleActionPress("addSchedule"),
+          },
+          {
+            icon: "account-plus",
+            label: "Thêm Thành Viên",
+            onPress: () => handleActionPress("addMember"),
+          },
+        ]}
+        onStateChange={({ open }) => setIsFabOpen(open)}
+        style={{
+          position: "absolute",
+          bottom: -5,
+          right: 8,
+          borderRadius: 100,
+        }}
+      />  
+
+      <AddBudgetModal
+        visible={showBudgetModal}
+        onClose={() => setShowBudgetModal(false)}
+        onSave={handleSaveBudget}
+        eventId={eventId}
+      />
+      <AddActualExpense
+        visible={showExpenseModal}
+        onClose={() => setShowExpenseModal(false)}
+        onSave={handleSaveExpense}
+        eventId={eventId}
+      />
       <AddMemberModal
-        visible={isAddMemberModalVisible}
+        visible={isAddMemberModalVisible || showAddMemberModalFromFab}
         onClose={handleCloseAddMemberModal}
         onSave={handleMemberAdded}
         eventId={eventId}
       />
+
+     
     </View>
   );
 };

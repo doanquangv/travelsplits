@@ -11,6 +11,7 @@ import { RootStackParamList } from "./types";
 import EditScheduleScreen from "../screens/events/EventDetail/ScheduleScreen/EditScheduleScreen";
 import ExpenseDetailScreen from "../screens/events/EventDetail/expenseScreen/ExpenseDetailScreen";
 import EditExpenseScreen from "../screens/events/EventDetail/expenseScreen/EditExpenseScreen";
+import EditEventScreen from "../screens/events/EventDetail/EditEventScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -31,20 +32,10 @@ const MainNavigator = () => {
         component={EditScheduleScreen}
         options={{ title: "Chỉnh Sửa Lịch Trình" }}
       />
-      <Stack.Screen
-        name="ExpenseDetailScreen"
-        component={(props: any) => (
-          <ExpenseDetailScreen
-            {...props}
-            onDataChange={props.route.params.onDataChange} // Truyền callback từ params
-          />
-        )}
-      />
-      <Stack.Screen
-        name="EditExpenseScreen"
-        component={EditExpenseScreen}
+      <Stack.Screen name="ExpenseDetailScreen" component={ExpenseDetailScreen} />
         
-      />
+      <Stack.Screen name="EditExpenseScreen" component={EditExpenseScreen} />
+      <Stack.Screen name ='EditEventScreen' component={EditEventScreen}/>
     </Stack.Navigator>
   );
 };

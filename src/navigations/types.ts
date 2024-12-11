@@ -1,7 +1,7 @@
 // client/travelsplits/src/navigation/types.ts
 
 export type RootStackParamList = {
-    ScheduleTab: { eventId: string }; // Thêm eventId nếu ScheduleTab nhận
+    ScheduleTab: { eventId: string;   }; // Thêm eventId nếu ScheduleTab nhận
     AddNewSchedule: { 
       eventId: string; 
       // fetchSchedules: () => Promise<void>; 
@@ -18,13 +18,16 @@ export type RootStackParamList = {
     main: undefined;
     TransactionsTab: undefined; // Màn hình không có tham số
 
-    ExpenseDetailScreen:{eventId:string,expenseId:string,onDataChange:()=>void}
+    ExpenseDetailScreen:{eventId:string,expenseId:string}
     SelectLocation: undefined; // Nếu không nhận params
     EditExpenseScreen: {
       eventId: string;
       expenseId: string;
-      onDataChange: () => void;
+      
     };
+    EditEventScreen:{
+      eventId:string;
+    }
     // Thêm các màn hình khác nếu cần
   };
   

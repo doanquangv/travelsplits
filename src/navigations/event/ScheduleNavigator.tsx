@@ -9,7 +9,16 @@ import ScheduleDetailScreen from "../../screens/events/EventDetail/ScheduleScree
 import AddScheduleScreen from "../../screens/events/EventDetail/ScheduleScreen/AddNewScheduleScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const ScheduleNavigator = ({ eventId }: { eventId: string }) => {
+const ScheduleNavigator = ({
+  eventId,
+  onRefresh,
+}: {
+  eventId: string;
+  onRefresh: () => void;
+}) => {  
+
+  
+
   return (
     <Stack.Navigator
       initialRouteName="ScheduleTab"
@@ -17,7 +26,7 @@ const ScheduleNavigator = ({ eventId }: { eventId: string }) => {
     >
       <Stack.Screen
         name="ScheduleTab"
-        children={(props) => <ScheduleTab {...props} eventId={eventId} />}
+        children={(props) => <ScheduleTab {...props} eventId={eventId} onRefresh={onRefresh} />}
       />
 
       <Stack.Screen

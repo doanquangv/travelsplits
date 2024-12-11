@@ -1,9 +1,10 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { ArrowLeft2, Card, MoneyRecive, MoneySend } from "iconsax-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ImageBackground,
   ScrollView,
+  StatusBar,
   TouchableOpacity,
   View
 } from "react-native";
@@ -30,22 +31,48 @@ import MembersTab from "./EventDetail/MembersTab";
 import EventDetailTabs from "../../navigations/event/TabEventNavigation";
 import TabEventNavigation from "../../navigations/event/TabEventNavigation";
 import { Button } from "react-native-paper";
+import { Modalize } from "react-native-modalize";
+import eventAPI from "../../apis/eventApi";
+import { Feather } from "@expo/vector-icons";
 
 
 
 const EventDetail = ({ navigation, route }: any) => {
   const { item } = route.params;
   const imageUrl = item.imageUrl; // Lấy URL hình ảnh từ sự kiện
+  const modalizeRef = useRef<Modalize>(null);
+  
 
-  const handleActionPress=()=>{
-    if(item.status=="active")
-    {
-      item.status="inactive";
+  const openSettings = () => {
+    modalizeRef.current?.open();
+  }
+
+  const handleEditEvent = () => {
+    modalizeRef.current?.close();
+    // Điều hướng sang màn hình EditEventScreen
+    navigation.navigate('EditEventScreen', { event: item });
+  }
+
+  const handleDeleteEvent = async () => {
+    console.log("Item ID:", item._id); // Log ID trước khi gửi API
+
+    modalizeRef.current?.close();
+    // Gọi API xóa sự kiện
+    try {
+      
+      await eventAPI.HandleEvent(`/${item._id}`, {}, 'delete');
+      alert("Xóa sự kiện thành công.");
+      navigation.goBack();
+    } catch (error) {
+      alert("Lỗi khi xóa sự kiện.");
     }
   }
 
+  
+
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar barStyle="light-content" backgroundColor='transparent' translucent />
        <ImageBackground
         source={imageUrl ? { uri: imageUrl } : require("../../assets/images/travel.png")}
         style={{ height: 244 }}
@@ -69,6 +96,9 @@ const EventDetail = ({ navigation, route }: any) => {
                 size={22}
                 color={appColors.white}
               />
+              <TouchableOpacity onPress={openSettings} style={{width:48,height:48,justifyContent:"center",alignItems:"flex-end"}}>
+                <Feather name="settings" size={20} color={appColors.white} />
+              </TouchableOpacity>
               
             </RowComponent>
           </View>
@@ -78,86 +108,18 @@ const EventDetail = ({ navigation, route }: any) => {
        
       
       
-        <TabEventNavigation eventId={item._id}/>
+      <TabEventNavigation eventId={item._id}/>
         
-        
+      <Modalize ref={modalizeRef} adjustToContentHeight>
+        <View style={{padding:20}}>
+          <ButtonComponent text="Chỉnh sửa sự kiện" type="primary" onPress={handleEditEvent} />
+          <SpaceComponent height={10}/>
+          <ButtonComponent text="Xóa sự kiện" type="primary" color={appColors.danger} onPress={handleDeleteEvent} />
+        </View>
+      </Modalize>
+
     </View>
   );
 };
 
 export default EventDetail;
-{/* <SectionComponent  styles={[globalStyles.shadow,{backgroundColor:appColors.white, borderRadius:25}]}>
-  <View style={[globalStyles.center,{paddingTop:10}]}>
-    <TextComponent text="Số dư nợ: " size={18} />
-    <TextComponent text="0đ" font={fontFamily.bold} size={24} />
-
-  </View>
-  <SpaceComponent height={20} />
-  <RowComponent justify="space-around">
-
-    <RowComponent>
-    <CardComponent styles={[globalStyles.noSpaceCard]} color="#f8a9a9">
-
-      <MoneySend   color={appColors.danger} />
-    </CardComponent>
-      <View style={{paddingLeft:10}}>
-      <TextComponent   text="Đã trả: " />
-      <TextComponent text="0đ" font={fontFamily.bold} />
-      </View>
-    
-    </RowComponent>
-    <View style={{width:1, backgroundColor:appColors.gray,marginHorizontal:10, height:45}}></View>
-    
-    <RowComponent>
-      <CardComponent styles={[globalStyles.noSpaceCard]} color="#bae0bd">
-        <MoneyRecive size={20} color={appColors.green} />
-      </CardComponent>
-      <View style={{paddingLeft:10}}>
-      <TextComponent text="Tổng tiền:" />
-      <TextComponent text="0đ" font={fontFamily.bold} />
-      </View>
-    </RowComponent>
-  </RowComponent>
-</SectionComponent>
-
-<SpaceComponent height={30} />
-
-<SectionComponent styles={[globalStyles.shadow,{backgroundColor:appColors.white, borderRadius:25}]}>
-  <TextComponent  text="Số dư nợ khác" size={18} font={fontFamily.bold} styles={{paddingTop:10}} />
-  <View  style={[{borderBottomWidth: 1, borderBottomColor:appColors.border, paddingTop:15}]}></View>
-<View>
-  <RowComponent justify="space-between" styles={[{paddingVertical:15}]} >
-    <RowComponent>
-      <CircleComponent>
-        <View></View>
-      </CircleComponent>
-      <TextComponent text="Đoàn Quang vũ" size={16} font={fontFamily.medium} styles={{paddingLeft:5}} />
-    </RowComponent>
-    <TextComponent text="0đ" size={16} font={fontFamily.medium} color={appColors.black} />
-    
-  </RowComponent>
-  <RowComponent justify="space-between" styles={[{paddingVertical:15}]} >
-    <RowComponent>
-      <CircleComponent>
-        <View></View>
-      </CircleComponent>
-      <TextComponent text="Đoàn Quang B" size={16} font={fontFamily.medium} styles={{paddingLeft:5}} />
-    </RowComponent>
-    <TextComponent text="0đ" size={16} font={fontFamily.medium} color={appColors.black} />
-    
-  </RowComponent>
-  <RowComponent justify="space-between" styles={[{paddingVertical:15}]} >
-    <RowComponent>
-      <CircleComponent>
-        <View></View>
-      </CircleComponent>
-      <TextComponent text="Đoàn Quang C" size={16} font={fontFamily.medium} styles={{paddingLeft:5}} />
-    </RowComponent>
-    <TextComponent text="0đ" size={16} font={fontFamily.medium} color={appColors.black} />
-    
-  </RowComponent>
-
-</View> 
-  
-</SectionComponent>
- */}

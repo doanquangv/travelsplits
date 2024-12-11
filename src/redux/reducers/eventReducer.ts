@@ -14,7 +14,7 @@ const initialState: EventState = {
 
 const eventSlice = createSlice({
   name: "event",
-  initialState,
+initialState,
   reducers: {
     addEvent: (state, action) => {
       state.events.push(action.payload);

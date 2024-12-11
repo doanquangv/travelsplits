@@ -1,6 +1,6 @@
 // DebtTab.tsx
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { appColors } from "../../../../constants/appColors";
 import {
@@ -18,13 +18,16 @@ import { FAB } from "react-native-paper";
 import AddBudgetModal from "../../../../modals/eventModals/AddBudgetModal";
 import expenseAPI from "../../../../apis/expenseApi";
 import AddActualExpense from "../../../../modals/eventModals/AddActualExpense";
+import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../../../../navigations/types";
+import AddMemberModal from "../../../../modals/eventModals/AddMemberModal";
 
 interface DebtTabProps {
   eventId: string;
   totalBudget: any;
   actualExpenses: any[];
   members: any[];
-  onDataChange: () => void; // callback khi có thay đổi dữ liệu
+  onRefresh: () => void;
 }
 
 const formatCurrency = (value: number): string => {
@@ -38,11 +41,14 @@ const DebtTab: React.FC<DebtTabProps> = ({
   totalBudget,
   actualExpenses,
   members,
-  onDataChange
+  onRefresh,
 }) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const [isFabOpen, setIsFabOpen] = useState(false); // Trạng thái mở/đóng FAB
   const [showBudgetModal, setShowBudgetModal] = useState(false); // Trạng thái modal
   const [showExpenseModal, setShowExpenseModal] = useState(false); // Trạng thái modal chi tiêu
+  const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
   const totalPaid = actualExpenses?.reduce(
     (sum: number, expense: { amount: number }) => sum + expense.amount,
@@ -53,9 +59,12 @@ const DebtTab: React.FC<DebtTabProps> = ({
   const memberDebt = difference / numberOfMembers;
 
   const handleActionPress = (action: string) => {
-    setIsFabOpen(false); 
-    console.log("Selected Action:", action);
-    // Nếu bạn muốn hiển thị modal thêm lịch trình, thêm thành viên, có thể xử lý ở đây
+    setIsFabOpen(false);
+    if (action === "addSchedule") {
+      navigation.navigate("AddNewSchedule", { eventId });
+    } else if (action === "addMember") {
+      setShowAddMemberModal(true);
+    }    // Nếu bạn muốn hiển thị modal thêm lịch trình, thêm thành viên, có thể xử lý ở đây
   };
 
   const handleSaveBudget = async (data: {
@@ -69,9 +78,8 @@ const DebtTab: React.FC<DebtTabProps> = ({
         { ...data, amount: parseFloat(data.amount) },
         "put"
       );
-      // Sau khi thêm budget thành công, gọi onDataChange để fetch lại dữ liệu
-      onDataChange();
       setShowBudgetModal(false);
+      onRefresh();
     } catch (error) {
       console.error("Lỗi khi thêm tổng ngân sách:", error);
     }
@@ -107,17 +115,23 @@ const DebtTab: React.FC<DebtTabProps> = ({
         alert("Lỗi: Không thể cập nhật danh sách chi tiêu.");
       }
 
-      // Sau khi thêm expense thành công, gọi onDataChange để fetch lại dữ liệu
-      onDataChange();
       setShowExpenseModal(false);
+      onRefresh();
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Lỗi khi thêm chi tiêu:", error.message || "Lỗi không xác định");
+        console.error(
+          "Lỗi khi thêm chi tiêu:",
+          error.message || "Lỗi không xác định"
+        );
       } else {
         console.error("Lỗi khi thêm chi tiêu:", "Lỗi không xác định");
       }
       alert("Lỗi khi thêm chi tiêu");
     }
+  };
+  const handleMemberAdded = (email: string) => {
+    setShowAddMemberModal(false);
+    onRefresh();
   };
 
   return (
@@ -139,7 +153,11 @@ const DebtTab: React.FC<DebtTabProps> = ({
         >
           <View style={[globalStyles.center, { paddingTop: 20 }]}>
             <TextComponent text="Số dư nợ của bạn:" size={18} />
-            <TextComponent text={`${formatCurrency(memberDebt)}`} font={fontFamily.bold} size={24} />
+            <TextComponent
+              text={`${formatCurrency(memberDebt)}`}
+              font={fontFamily.bold}
+              size={24}
+            />
           </View>
           <SpaceComponent height={20} />
           <RowComponent justify="space-around">
@@ -155,6 +173,7 @@ const DebtTab: React.FC<DebtTabProps> = ({
                 <TextComponent
                   text={` ${formatCurrency(totalBudget?.amount || 0)}`}
                   font={fontFamily.bold}
+                  numberOfLines={1}
                 />
               </View>
             </RowComponent>
@@ -281,6 +300,12 @@ const DebtTab: React.FC<DebtTabProps> = ({
         visible={showExpenseModal}
         onClose={() => setShowExpenseModal(false)}
         onSave={handleSaveExpense}
+        eventId={eventId}
+      />
+      <AddMemberModal
+        visible={showAddMemberModal}
+        onClose={() => setShowAddMemberModal(false)}
+        onSave={handleMemberAdded}
         eventId={eventId}
       />
     </View>

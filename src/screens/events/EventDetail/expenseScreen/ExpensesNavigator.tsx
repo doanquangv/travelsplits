@@ -10,11 +10,13 @@ import TransactionsTab from "./TransactionsTab";
 import { fontFamily } from "../../../../constants/fontFamilies";
 import { app } from "../../../../../configs/firebaseConfig";
 import { appColors } from "../../../../constants/appColors";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 
 interface ExpensesNavigatorProps {
   eventId: string;
+  
 }
 
 const ExpensesNavigator: React.FC<ExpensesNavigatorProps> = ({ eventId }) => {
@@ -22,7 +24,6 @@ const ExpensesNavigator: React.FC<ExpensesNavigatorProps> = ({ eventId }) => {
   const [actualExpenses, setActualExpenses] = useState<any[]>([]);
   const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  
 
   const fetchExpenses = async () => {
     setLoading(true);
@@ -61,17 +62,17 @@ const ExpensesNavigator: React.FC<ExpensesNavigatorProps> = ({ eventId }) => {
     }
   };
 
-  useEffect(() => {
-    fetchExpenses();
-    fetchMembers();
-  }, [eventId]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchExpenses();
+      fetchMembers();
+    }, [eventId])
+  );
 
-  // Hàm callback để DebtTab gọi khi có thay đổi dữ liệu (thêm chi tiêu, thêm budget)
-  const handleDataChange = useCallback(() => {
-    // Gọi lại fetchExpenses, fetchMembers để cập nhật dữ liệu
+  const handleRefresh = () => {
     fetchExpenses();
     fetchMembers();
-  }, [eventId]);
+  };
 
   return (
     <Tab.Navigator
@@ -103,24 +104,23 @@ const ExpensesNavigator: React.FC<ExpensesNavigatorProps> = ({ eventId }) => {
           <DebtTab
             {...props}
             eventId={eventId}
+            members={members}
             totalBudget={totalBudget}
             actualExpenses={actualExpenses}
-            members={members}
-            onDataChange={handleDataChange}
+            onRefresh={handleRefresh}
           />
         )}
       </Tab.Screen>
 
       <Tab.Screen name="Giao dịch">
         {(props) => (
-         <TransactionsTab
-         {...props}
-         totalBudget={totalBudget}
-         actualExpenses={actualExpenses}
-         eventId={eventId} // Truyền eventId xuống
-         onDataChange={fetchExpenses} // Gọi lại hàm fetchExpenses khi có thay đổi
-
-       />
+          <TransactionsTab
+            {...props}
+            totalBudget={totalBudget}
+            actualExpenses={actualExpenses}
+            eventId={eventId} // Truyền eventId xuống
+            onRefresh={handleRefresh}
+          />
         )}
       </Tab.Screen>
     </Tab.Navigator>
