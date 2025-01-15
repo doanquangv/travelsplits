@@ -23,14 +23,12 @@ const MainNavigator = () => {
       <Stack.Screen name="main" component={TabNavigation} />
       <Stack.Screen name="EventDetail" component={EventDetail} />
       <Stack.Screen
-        name="AddNewSchedule"
+        name="AddScheduleScreen"
         component={AddScheduleScreen}
-        options={{ title: "Thêm Lịch Trình" }}
       />
       <Stack.Screen
         name="EditScheduleScreen"
         component={EditScheduleScreen}
-        options={{ title: "Chỉnh Sửa Lịch Trình" }}
       />
       <Stack.Screen name="ExpenseDetailScreen" component={ExpenseDetailScreen} />
         

@@ -116,13 +116,13 @@ const MembersTab: React.FC<MembersTabProps> = ({ eventId, onRefresh }) => {
     if (action === "addSchedule") {
       // Điều hướng sang thêm lịch trình
       // Giả sử bạn đã có navigation, tùy vào code gốc của bạn
-      navigation.navigate("AddNewSchedule", { eventId });
+      navigation.navigate("AddScheduleScreen", { eventId });
     } else if (action === "addMember") {
       setShowAddMemberModalFromFab(true);
     }
   };
 
-  const handleSaveBudget = async (data: { title: string; amount: string; addedBy: string }) => {
+  const handleSaveBudget = async (data: { title: string; amount: string}) => {
     try {
       await expenseAPI.HandleExpense(
         `/${eventId}/budget`,

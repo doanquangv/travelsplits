@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const AuthNavigator = () => {
   
   const Stack = createNativeStackNavigator();
-  const [initialRoute, setInitialRoute] = useState('OnbroadingScreen') ;  
+    
   return (
     <Stack.Navigator
         screenOptions={{

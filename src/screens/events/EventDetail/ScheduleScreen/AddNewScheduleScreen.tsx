@@ -27,12 +27,12 @@ import { ArrowLeft } from "iconsax-react-native";
 
 type AddScheduleScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  "AddNewSchedule"
+  "AddScheduleScreen"
 >;
 
 type AddScheduleScreenRouteProp = RouteProp<
   RootStackParamList,
-  "AddNewSchedule"
+  "AddScheduleScreen"
 >;
 
 type Props = {

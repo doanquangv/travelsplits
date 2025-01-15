@@ -39,7 +39,7 @@ import { Feather } from "@expo/vector-icons";
 
 const EventDetail = ({ navigation, route }: any) => {
   const { item } = route.params;
-  const imageUrl = item.imageUrl; // Lấy URL hình ảnh từ sự kiện
+  const imageUrl = item.imageUrl; 
   const modalizeRef = useRef<Modalize>(null);
   
 
@@ -49,17 +49,12 @@ const EventDetail = ({ navigation, route }: any) => {
 
   const handleEditEvent = () => {
     modalizeRef.current?.close();
-    // Điều hướng sang màn hình EditEventScreen
     navigation.navigate('EditEventScreen', { event: item });
   }
 
   const handleDeleteEvent = async () => {
-    console.log("Item ID:", item._id); // Log ID trước khi gửi API
-
     modalizeRef.current?.close();
-    // Gọi API xóa sự kiện
-    try {
-      
+    try {   
       await eventAPI.HandleEvent(`/${item._id}`, {}, 'delete');
       alert("Xóa sự kiện thành công.");
       navigation.goBack();

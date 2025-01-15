@@ -41,11 +41,11 @@ const ScheduleDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { eventId, scheduleId } = route.params;
   const [schedule, setSchedule] = useState<Schedule | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const modalizeRef = useRef<Modalize>(null); // Modal reference
+  const modalizeRef = useRef<Modalize>(null); 
 
   const fetchScheduleDetails = async () => {
     try {
-      const res = await scheduleAPI.getSchedule(eventId, scheduleId); // Sử dụng getSchedule với eventId và scheduleId
+      const res = await scheduleAPI.getSchedule(eventId, scheduleId); 
       if (res && res.data) {
         setSchedule(res.data);
       }
@@ -136,7 +136,7 @@ const ScheduleDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         padding: 16,
         marginHorizontal: 16,
         marginVertical: 20,
-        elevation: 2, // Hiệu ứng đổ bóng
+      
       }}>
          
 
@@ -185,7 +185,7 @@ const ScheduleDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           </RowComponent>
         </SectionComponent>
 
-        {/* Nút Chỉnh sửa và Xóa */}
+       
         <Modalize ref={modalizeRef} modalHeight={200}>
           <View style={{ padding: 20 }}>
             <ButtonComponent

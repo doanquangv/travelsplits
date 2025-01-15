@@ -35,7 +35,7 @@ const TabEventNavigation: React.FC<TabEventNavigationProps> = ({ eventId }) => {
     const fetchUserRole = async () => {
       try {
         const res = await memberAPI.getEventMembers(eventId);
-        const currentUserId = "current_user_id"; // Lấy từ auth store
+        const currentUserId = "current_user_id"; 
         const isHostRole = res?.data?.some(
           (member: any) => member.userId._id === currentUserId && member.role === "host"
         );
@@ -50,12 +50,10 @@ const TabEventNavigation: React.FC<TabEventNavigationProps> = ({ eventId }) => {
   }, [eventId]);
 
   if (isHost === null) {
-    // Chưa xác định được isHost -> show loading hoặc return null
     return <Text>Loading...</Text>;
   }
 
   const handleRefresh = () => {
-    // Hàm làm mới dữ liệu, bạn có thể gọi lại các API khi cần thiết
     console.log("Refreshing data...");
   };
 

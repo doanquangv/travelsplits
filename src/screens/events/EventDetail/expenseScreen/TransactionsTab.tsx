@@ -44,13 +44,13 @@ const TransactionsTab: React.FC<TransactionsTabProps> = ({
   const handleActionPress = (action: string) => {
     setIsFabOpen(false);
     if (action === "addSchedule") {
-      navigation.navigate("AddNewSchedule", { eventId });
+      navigation.navigate("AddScheduleScreen", { eventId });
     } else if (action === "addMember") {
       setShowAddMemberModal(true);
     }
   };
 
-  const handleSaveBudget = async (data: { title: string; amount: string; addedBy: string }) => {
+  const handleSaveBudget = async (data: { title: string; amount: string }) => {
     try {
       await expenseAPI.HandleExpense(
         `/${eventId}/budget`,

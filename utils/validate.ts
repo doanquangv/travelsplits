@@ -10,20 +10,33 @@ export class Validate {
     }
 
 
-    static Password(val: string) {
-        return val.length >= 6 
-    }
+    static EventValidation(data: any) {
+      const mess: string[] = [];
+      const realname: { [key: string]: string } = {
+        title: "Tên chuyến đi",
+        startDate: "Ngày bắt đầu",
+        endDate: "Ngày kết thúc",
+        locationAddress: "Địa chỉ",
+        imageUrl: "Hình ảnh",
+      };
+      const requiredFields = [
+          "title",
+          "startDate",
+          "endDate",
+          "locationAddress",
+          "imageUrl",
+      ];
 
-    static EventValidation = (data: any) => {
-        // console.log(data);
-        
-        const mess: string[] = [];
-        Object.keys(data).forEach(key => {
-          if (key !== 'description' && key !== 'users' && key !== 'locationTitle' ) {
-            !data[`${key}`] && mess.push(`${key} is required!!!`);
+      requiredFields.forEach((field) => {
+          if (!data[field] || (typeof data[field] === "string" && data[field].trim() === "")) {
+            mess.push(`${realname[field]} là bắt buộc!`);
           }
-        });
-    
-        return mess;
+      });
+
+      if (data.startDate && data.endDate && new Date(data.startDate) > new Date(data.endDate)) {
+          mess.push("ngày kết thúc phải sau ngày bắt đầu");
       }
+
+      return mess;
+  }
 }

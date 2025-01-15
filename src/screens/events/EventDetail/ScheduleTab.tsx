@@ -83,7 +83,7 @@ const ScheduleTab: React.FC<ScheduleTabProps> = ({ eventId, onRefresh }) => {
   };
 
   const handleAddSchedule = () => {
-    navigation.navigate("AddNewSchedule", { eventId });
+    navigation.navigate("AddScheduleScreen", { eventId });
   };
 
   const handleActionPress = (action: string) => {
@@ -98,7 +98,7 @@ const ScheduleTab: React.FC<ScheduleTabProps> = ({ eventId, onRefresh }) => {
   const handleSaveBudget = async (data: {
     title: string;
     amount: string;
-    addedBy: string;
+    // addedBy: string;
   }) => {
     try {
       await expenseAPI.HandleExpense(

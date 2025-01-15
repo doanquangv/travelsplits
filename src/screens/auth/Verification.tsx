@@ -104,13 +104,13 @@ const Verification = ({ navigation, route }: any) => {
           dispatch(addAuth(res.data));
           await AsyncStorage.setItem('auth', JSON.stringify(res.data));
         } catch (error) {
-          setErrorMessages("Can not register user");
+          setErrorMessages("Không thể đăng ký bằng tài khoản này");
           console.log(`Can not register user ${error}`);
           
         }
       }
     } else {
-      setErrorMessages("Please wait for the next code");
+      setErrorMessages("Hãy đợi đến code tiếp theotheo");
     }
   };
 
@@ -120,10 +120,7 @@ const Verification = ({ navigation, route }: any) => {
         <TextComponent text="Xác thực người dùng" title />
         <SpaceComponent height={12} />
         <TextComponent
-          text={`Đã gửi một đoạn mã xác thực vào ${email.replace(
-            /.{1,5}/,
-            (m: any) => "*".repeat(m.length)
-          )}`}
+          text={`Đã gửi một đoạn mã xác thực vào ${email}`}
         />
 
         <SpaceComponent height={26} width={0} />

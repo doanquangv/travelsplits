@@ -77,24 +77,22 @@ const ExpensesNavigator: React.FC<ExpensesNavigatorProps> = ({ eventId }) => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarPressOpacity: 0.7, // Độ mờ khi nhấn vào tab
+        tabBarPressOpacity: 0.7, 
         tabBarActiveTintColor: appColors.black,
         tabBarIndicatorStyle: {
           backgroundColor: appColors.black,
-          height: 3, // Độ dày của indicator
-          borderRadius: 2, // Làm tròn các góc của indicator
-          width: "20%", // Tạo hiệu ứng indicator ngắn hơn tab
-          marginLeft: "15%", // Căn chỉnh lại vị trí indicator
+          height: 3, 
+          borderRadius: 2, 
+          width: "20%", 
+          marginLeft: "15%", 
         },
 
-        animationEnabled: true, // Bật hiệu ứng chuyển động
-        swipeEnabled: true, // Bật tính năng swipe giữa các tab
         tabBarStyle: {
           marginTop: 10,
           backgroundColor: appColors.white2,
-          elevation: 0, // Bỏ bóng của tab
-          height: 50, // Tăng chiều cao tabBar
-          borderRadius: 25, // Làm tròn góc trên
+          elevation: 0, 
+          height: 50, 
+          borderRadius: 25, 
           marginHorizontal: 15,
         },
       }}

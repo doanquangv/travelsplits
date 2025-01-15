@@ -18,7 +18,7 @@ type EditExpenseRouteProp = RouteProp<RootStackParamList, "EditExpenseScreen">;
 const defaultCategories = [
   { label: "Ăn uống", value: "Ăn uống" },
   { label: "Đi lại", value: "Đi lại" },
-  { label: "nghỉ dưỡng", value: "nghỉ dưỡng" },
+{ label: "nghỉ dưỡng", value: "nghỉ dưỡng" },
   { label: "Mua sắm", value: "Mua sắm" },
   { label: "Vui chơi", value: "Vui chơi" },
   { label: "Khác", value: "Khác" },

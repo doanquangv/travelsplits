@@ -54,7 +54,7 @@ const TimePicker = (props: Props) => {
         }
         
       </RowComponent >
-      {isShowDatePicker && Platform.OS === 'ios' && (
+      {isShowDatePicker  && (
         <DateTimePicker
           mode={type}
           value={date}

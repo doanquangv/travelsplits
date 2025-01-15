@@ -30,9 +30,8 @@ const ForgotPassword = () => {
     try {
 
       const res: any = await authenticationAPI.HandleAuthentication(api, {email}, 'post')
-      console.log(res)
 
-      Alert.alert('Done', 'Please check your email to reset password')
+      Alert.alert('Thành công', 'Kiểm tra email của bạn để đặt lại mật khẩu')
 
       setIsLoading(false)
     } catch (error) {

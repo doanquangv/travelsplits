@@ -25,7 +25,7 @@ const MapScreen = ({navigation}: any) => {
   }>();
   const [events, setEvents] = useState<eventModel[]>([]);
   const [hotels, setHotels] = useState<any[]>([]);
-  const mapRef = useRef<MapView>(null); // Tạo ref cho MapView
+  const mapRef = useRef<MapView>(null); 
 
   useEffect(() => {
     const getPermission = async () => {
@@ -35,7 +35,7 @@ const MapScreen = ({navigation}: any) => {
         return;
       }
 
-      const position = await Location.getCurrentPositionAsync({}); // Sửa lỗi ở đây
+      const position = await Location.getCurrentPositionAsync({}); 
       if (position.coords) {
         setCurrentLocation({
           lat: position.coords.latitude,
@@ -49,8 +49,8 @@ const MapScreen = ({navigation}: any) => {
 
   const fetchHotels = async (latitude: number, longitude: number) => {
     try {
-       // Thay YOUR_HERE_API_KEY bằng API key của bạn
-      const url = `https://discover.search.hereapi.com/v1/discover?at=${latitude},${longitude}&q=hotel&limit=10&apiKey=zSkRid2amrSBnEn9rFAVKhc0bjcLU3Aa8MaAVXRFmx8`;
+       
+      const url = `https://discover.search.hereapi.com/v1/discover?at=${latitude},${longitude}&q=hotel&limit=10&apiKey=${process.env.HERE_API_KEY}`;
       
       const response = await axios.get(url);
       if (response.data.items) {
@@ -61,19 +61,19 @@ const MapScreen = ({navigation}: any) => {
     }
   };
 
-  const handleMyLocationPress = () => {
-    if (currentLocation && mapRef.current) {
-      mapRef.current.animateToRegion(
-        {
-          latitude: currentLocation.lat,
-          longitude: currentLocation.long,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        },
-        1000 // Thời gian di chuyển camera (ms)
-      );
-    }
-  };
+  // const handleMyLocationPress = () => {
+  //   if (currentLocation && mapRef.current) {
+  //     mapRef.current.animateToRegion(
+  //       {
+  //         latitude: currentLocation.lat,
+  //         longitude: currentLocation.long,
+  //         latitudeDelta: 0.01,
+  //         longitudeDelta: 0.01,
+  //       },
+  //       1000 
+  //     );
+  //   }
+  // };
   return (
     <View style={{ flex: 1 }}>
       <StatusBar barStyle={"dark-content"} />
@@ -91,15 +91,7 @@ const MapScreen = ({navigation}: any) => {
             longitudeDelta: 0.01,
           }}
           
-          // region={{
-          //   latitude: currentLocation.lat,
-          //   longitude: currentLocation.long,
-          //   latitudeDelta: 0.01,
-          //   longitudeDelta: 0.01,
-          // }}
-          mapType="terrain"
-          // onRegionChange={val => console.log(val)}
-        >
+          mapType="terrain"        >
           <Marker
             coordinate={{
               latitude: currentLocation.lat,
@@ -114,7 +106,7 @@ const MapScreen = ({navigation}: any) => {
                 latitude: hotel.position.lat,
                 longitude: hotel.position.lng,
               }}
-              title={hotel.title}
+              title={hotel.address}
               description={hotel.address.label}
             />
           ))}
@@ -155,7 +147,7 @@ const MapScreen = ({navigation}: any) => {
           </View>
           <SpaceComponent width={12} />
           <CardComponent
-           onPress={handleMyLocationPress}
+          //  onPress={handleMyLocationPress}
             styles={[globalStyles.noSpaceCard, { width: 56, height: 56 }]}
             color={appColors.white}
           >
@@ -172,11 +164,11 @@ const MapScreen = ({navigation}: any) => {
       <View
         style={{
           position: "absolute",
-          top: "50%",
+          top: "60%",
           right: 0,
           left: 0,
           backgroundColor: appColors.white,
-          height: "50%",
+          height: "40%",
           paddingHorizontal: 20,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
@@ -206,7 +198,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    height: 300,
+    height:100,
   },
   hotelItem: {
     paddingVertical: 10,

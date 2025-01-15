@@ -2,7 +2,7 @@
 
 export type RootStackParamList = {
     ScheduleTab: { eventId: string;   }; // Thêm eventId nếu ScheduleTab nhận
-    AddNewSchedule: { 
+    AddScheduleScreen: { 
       eventId: string; 
       // fetchSchedules: () => Promise<void>; 
     };

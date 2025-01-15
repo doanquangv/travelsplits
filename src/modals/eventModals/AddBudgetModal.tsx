@@ -16,7 +16,7 @@ import expenseAPI from "../../apis/expenseApi";
 interface AddBudgetModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (data: { title: string; amount: string; addedBy: string }) => void;
+  onSave: (data: { title: string; amount: string }) => void;
   eventId: string; // Thêm eventId
 }
 
@@ -29,7 +29,7 @@ const AddBudgetModal: React.FC<AddBudgetModalProps> = ({
   const [budget, setBudget] = useState({
     title: "",
     amount: "",
-    addedBy: "",
+    // addedBy: "",
   });
   
   const [amountError, setAmountError] = useState("");
@@ -43,7 +43,7 @@ const AddBudgetModal: React.FC<AddBudgetModalProps> = ({
 
     setAmountError(""); // Xóa lỗi nếu có
     onSave(budget); // Gọi hàm cha để xử lý dữ liệu
-    setBudget({ title: "", amount: "", addedBy: "" }); // Reset dữ liệu
+    setBudget({ title: "", amount: ""}); // Reset dữ liệu
     onClose(); // Đóng modal
   };
   
@@ -77,11 +77,11 @@ const AddBudgetModal: React.FC<AddBudgetModalProps> = ({
           {amountError ? (
             <TextComponent text={amountError} color={appColors.danger} />
           ):null}
-          <InputComponent
+          {/* <InputComponent
             placeholder="Người thêm"
             value={budget.addedBy}
             onChange={(text) => setBudget({ ...budget, addedBy: text })}
-          />
+          /> */}
           <RowComponent >
             <ButtonComponent
               text="Lưu"

@@ -36,8 +36,8 @@ const initValues = {
   users: [],
   hostId: "",
   
-  startDate : Date.now(),
-  endDate: Date.now(),
+  startDate : Date(),
+  endDate: Date(),
   
   status: "đang hoạt động",
 };
@@ -56,13 +56,10 @@ const AddNewScreen = ({navigation}:any) => {
   const [errorMess, setErrorMess] = useState<string[]>([])
   
 
-  useEffect(() => {
-    handleGetAllUsers()
-  }, [])
+  
 
   useEffect(() => {
     const mess = Validate.EventValidation(eventData)
-
     setErrorMess(mess)
   },[eventData])
 
@@ -83,7 +80,7 @@ const AddNewScreen = ({navigation}:any) => {
         body: data,
       });
       const result = await res.json();
-      return result.secure_url; // URL ảnh đã tải lên
+      return result.secure_url; 
     } catch (error) {
       console.error("Upload to Cloudinary failed:", error);
       return null;
@@ -95,31 +92,8 @@ const AddNewScreen = ({navigation}:any) => {
     items[`${key}`] = value;
     setEventData(items);
   };
-  const handleGetAllUsers = async () => {
-    const api = `/get-all`;
-
-    try {
-      const res: any = await userAPI.HandleUser(api);
-      
-      if(res && res.data) {
-        const items: SelectModel[]= []
-
-        res.data.forEach((item: any) =>
-          item.email &&
-          items.push({
-            label: item.email,
-            value: item.id
-          })
-        )
-        setUserSelects(items)
-        
-      }
-    } catch (error) {
-      console.log("errorrrr", error);
-    }
-  }
-
   
+
 
 const handleImageSelected = async (imageData: { type: 'file' | 'url', value: any }) => {
   if (imageData.type === 'file') {
@@ -146,18 +120,15 @@ const handleLocation = (val: any) => {
         // date: eventData.date.getTime(),
     };
     handlePushEvent(eventPayload);
-    console.log(eventPayload)
+   
 };
 
   const handlePushEvent = async (event: eventModel) => {
-    console.log("Sending event data:", event);
     
     const api = '/add-new';
     try {
         const res = await eventAPI.HandleEvent(api, event, 'post');
-        console.log("Full Response:", res);
         if (res && res.data) {
-            console.log("Response Data:", res.data);
             navigation.navigate('Home');
             // dispatch(addEvent(res.data));
             setEventData({ ...initValues, hostId: auth.id });

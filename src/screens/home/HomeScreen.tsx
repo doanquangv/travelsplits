@@ -87,7 +87,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const debouncedFetch = debounce(() => {
       fetchEvents(searchQuery);
-    }, 300); // 300ms debounce
+    }, 300); 
 
     debouncedFetch();
 
@@ -112,7 +112,7 @@ const HomeScreen = () => {
         return;
       }
 
-      const position = await Location.getCurrentPositionAsync({}); // Sửa lỗi ở đây
+      const position = await Location.getCurrentPositionAsync({});
       if (position.coords) {
         reverseGeocode({
           lat: position.coords.latitude,
@@ -153,14 +153,14 @@ const HomeScreen = () => {
   };
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
-    await fetchEvents(searchQuery); // Gọi với searchQuery hiện tại
+    await fetchEvents(searchQuery);
     setRefreshing(false);
   }, [fetchEvents, searchQuery]);
 
   const renderItem = useCallback(
     ({ item }: { item: eventModel }) => {
       if (!item) {
-        return null; // hoặc xử lý lỗi phù hợp
+        return null; 
       }
       return <EventItem item={item} type="list" />;
     },
@@ -170,20 +170,7 @@ const HomeScreen = () => {
 
   const keyExtractor = useCallback((item: eventModel) => item?._id?.toString() || Math.random().toString(), []);
 
-  // const itemEvent= {
-  //   title:'Chuyến đi leo núi 2024',
-  //   descreption:'Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase. Read More...',
-  //   location:{
-  //     title: 'Gala Convention Center',
-  //     address:'36 Guild Street London, UK ',
-  //   },
-  //   imageUral:'',
-  //   users:[''],
-  //   authorId:'',
-  //   startAt: Date.now(),
-  //   endAt: Date.now(),
-  //   date: Date.now(),
-  // }
+ 
 
   return (
     <Pressable  style={{ flex: 1 }} onPress={Keyboard.dismiss}>
@@ -202,7 +189,7 @@ const HomeScreen = () => {
         >
           <RowComponent>
             <TouchableOpacity>
-              <HambergerMenu color={appColors.white2} size={30} />
+              {/* <HambergerMenu color={appColors.white2} size={30} /> */}
             </TouchableOpacity>
             <View style={[{ flex: 1, alignItems: "center" }]}>
               <RowComponent>
@@ -230,9 +217,9 @@ const HomeScreen = () => {
                 )}
             </View>
 
-            <CircleComponent color="#D1C4E9">
+            {/* <CircleComponent color="#D1C4E9">
               <Notification color={appColors.white} size={20} />
-            </CircleComponent>
+            </CircleComponent> */}
           </RowComponent>
           <SpaceComponent height={30} />
           <RowComponent styles={{ justifyContent: "flex-start" }}>
@@ -276,9 +263,9 @@ const HomeScreen = () => {
 
         <View style={[{ flex: 1, marginTop: 16 }]}>
           <SectionComponent styles={{ paddingTop: 20 }}>
-            <TabBarComponent title="Sự Kiện của Tôi" onPress={() => {}} />
-            {/* <FlatList data={Array.from({length: 5})} renderItem={({item, index}) => <EventItem key={`event${index}`} item={itemEvent} type="list"/>}/> */}
-
+            {/* <TabBarComponent title="Sự Kiện của Tôi" onPress={() => {}} /> */}
+           <TextComponent text="Sự kiện của tôi" title styles={{}}/>
+            <SpaceComponent height={10} />
             <FlatList
               data={events || []}
               keyExtractor={keyExtractor}
@@ -294,14 +281,7 @@ const HomeScreen = () => {
               }
               refreshing={refreshing}
               onRefresh={() => fetchEvents(searchQuery)}
-              initialNumToRender={10}
-              maxToRenderPerBatch={10}
-              windowSize={21}
-              getItemLayout={(data, index) => ({
-                length: 100,
-                offset: 100 * index,
-                index,
-              })}
+              
             />
           </SectionComponent>
         </View>

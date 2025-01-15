@@ -14,36 +14,15 @@ import SectionComponent from "./SectionComponent";
 import { useNavigation } from "@react-navigation/native";
 import EventStatus from "./StatusEvent";
 
-// const getEventStatus = (startAt: number, endAt: number) => {
-//   const now = Date.now();
-//   if (now < startAt) {
-//     return "Sắp bắt đầu";
-//   } else if (now >= startAt && now <= endAt) {
-//     return "Đang diễn ra";
-//   } else {
-//     return "Đã kết thúc";
-//   }
-// };
+
 interface Props {
   item: eventModel;
   type: "card" | "list";
 }
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "Sắp bắt đầu":
-      return appColors.primary; // Màu cho trạng thái "Sắp bắt đầu"
-    case "Đang diễn ra":
-      return "green"; // Màu cho trạng thái "Đang diễn ra"
-    case "Đã kết thúc":
-      return "red"; // Màu cho trạng thái "Đã kết thúc"
-    default:
-      return appColors.gray; // Màu mặc định
-  }
-};
+
 const EventItem = (props: Props) => {
   const { item, type } = props;
-  // const status = getEventStatus(item.startAt, item.endAt);
   
   const formattedStartDate = new Date(item.startDate).toLocaleDateString("vi-VN", {
     timeZone: "Asia/Ho_Chi_Minh",
@@ -88,7 +67,7 @@ const EventItem = (props: Props) => {
         </SectionComponent>
         <SectionComponent>
           <TextComponent text="Trạng thái :" />
-          <TextComponent text={ item.status} size={14} color={getStatusColor(item.status)} />
+          <TextComponent text={ item.status} size={14}  />
           
         </SectionComponent>
       </RowComponent>

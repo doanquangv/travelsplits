@@ -61,16 +61,15 @@ const DebtTab: React.FC<DebtTabProps> = ({
   const handleActionPress = (action: string) => {
     setIsFabOpen(false);
     if (action === "addSchedule") {
-      navigation.navigate("AddNewSchedule", { eventId });
+      navigation.navigate("AddScheduleScreen", { eventId });
     } else if (action === "addMember") {
       setShowAddMemberModal(true);
-    }    // Nếu bạn muốn hiển thị modal thêm lịch trình, thêm thành viên, có thể xử lý ở đây
+    }   
   };
 
   const handleSaveBudget = async (data: {
     title: string;
     amount: string;
-    addedBy: string;
   }) => {
     try {
       const response = await expenseAPI.HandleExpense(
